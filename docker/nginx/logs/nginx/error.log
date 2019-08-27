@@ -1,0 +1,1 @@
+2019/08/01 21:27:11 [emerg] 1#1: pcre_compile() failed: nothing to repeat in "*\.(png|jpg|jpeg)$" at "*\.(png|jpg|jpeg)$" in /etc/nginx/sites-available/default.conf:35
