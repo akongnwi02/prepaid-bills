@@ -189,3 +189,38 @@ services:
         - php-fpm
       networks:
         - backend
+
+### Chrome ##############################################
+    chrome:
+      build: ./chrome
+      volumes:
+        - /dev/shm:/dev/shm
+        - /dev/urandom:/dev/random
+        - $PWD/shared:/shared
+      depends_on:
+        - hub
+      environment:
+        JAVA_OPTS: -Xmx1024m
+        SCREEN_WIDTH: 1600
+        SCREEN_HEIGHT: 1200
+        HUB_HOST: hub
+        HUB_PORT: 4444
+        NODE_MAX_INSTANCES: 200
+        NODE_MAX_SESSION: 200
+        DBUS_SESSION_BUS_ADDRESS: /dev/null
+      shm_size: 2g
+      networks:
+        - backend
+
+### Hub #################################################
+    hub:
+      build: ./hub
+      ports:
+        - "${HUB_PORT}:4444"
+      environment:
+        GRID_MAX_SESSION: 5
+        GRID_TIMEOUT: 40000
+        GRID_BROWSER_TIMEOUT: 40000
+        GRID_CLEAN_UP_CYCLE: 5000
+      networks:
+        - backend

@@ -3,11 +3,15 @@
 namespace App\Exceptions;
 
 use Exception;
+use Facebook\WebDriver\Exception\TimeOutException;
+use Facebook\WebDriver\Exception\WebDriverCurlException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Laravel\Lumen\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -28,8 +32,9 @@ class Handler extends ExceptionHandler
      *
      * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
      *
-     * @param  \Exception  $exception
+     * @param  \Exception $exception
      * @return void
+     * @throws Exception
      */
     public function report(Exception $exception)
     {
@@ -45,6 +50,53 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        return parent::render($request, $exception);
+        $rendered = parent::render($request, $exception);
+
+        $error['code'] = $rendered->getStatusCode();
+        $error['message'] = 'Server Error';
+
+        if ($exception instanceof MethodNotAllowedHttpException) {
+            $error['message'] = 'Method Not Allowed';
+            $error['code'] = 405;
+        }
+
+        if ($exception instanceof NotFoundHttpException) {
+            $error['message'] = 'Route Not found';
+            $error['code'] = 404;
+        }
+
+        if ($exception instanceof ValidationException) {
+            $error['message'] = 'Invalid data';
+            $error['errors'] = $exception->errors();
+            $error['code'] = 422;
+        }
+
+        if ($exception instanceof ResourceNotFoundException) {
+            $error['message'] = $exception->getMessage();
+            $error['errors'] = $exception->errors();
+            $error['code'] = 404;
+        }
+
+        if ($exception instanceof TimeOutException) {
+            $error['message'] = 'Timeout';
+            $error['code'] = 504;
+        }
+
+        if ($exception instanceof WebDriverCurlException) {
+            $error['message'] = 'Timeout';
+            $error['code'] = 504;
+        }
+
+        \Log::error('ExceptionHandler', array_merge($error, [
+            'exception' => (string)$exception,
+            'trace' => $exception->getTrace(),
+            'previous' => $exception->getPrevious()
+        ]));
+
+
+        if (config('app.debug')) {
+            $error['debug'] = config('app.debug') ? (string)$exception : null;
+        }
+        return response()->json($error, $error['code']);
     }
 }

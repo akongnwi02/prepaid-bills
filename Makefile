@@ -35,7 +35,7 @@ reload: pull down up
 
 up:
 	echo "Starting Containers"
-	docker-compose up -d mysql nginx
+	docker-compose up -d
 #	sleep 10
 #	docker-compose up -d
 
@@ -57,11 +57,28 @@ update: down pull build
 root:
 	docker exec -it $$(docker-compose ps -q workspace) bash
 
-clear:
-	docker exec $$(docker-compose ps -q workspace) sh -c "composer clear-all"
-
 migrate:
 	docker exec $$(docker-compose ps -q workspace) sh -c "php artisan migrate"
 
 seed:
 	docker exec $$(docker-compose ps -q workspace) sh -c "php artisan db:seed --force"
+
+clear:
+	docker exec $$(docker-compose ps -q workspace) sh -c "truncate -s 0 storage/logs/*.log"
+
+env:
+	echo "\n Copying env file"
+	cp prod.env .env
+
+prod-up:
+	echo "\n Starting containers"
+	docker-compose up -d
+#	sleep 10
+#	docker-compose up -d
+
+	echo "\nInstalling Composer Dependencies"
+	docker exec $$(docker-compose ps -q workspace) sh -c "composer install --no-dev"
+	echo "Done"
+
+deploy: env prod-up
+	cp prod.env .env

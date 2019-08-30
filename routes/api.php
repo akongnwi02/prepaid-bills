@@ -11,6 +11,7 @@
 |
 */
 
-$router->get('/', function () use ($router) {
-    return $router->app->version();
-});
+use App\Http\Controllers\SearchMeterController;
+use Illuminate\Http\Request;
+
+$router->post('/search', ['uses' => 'SearchMeterController@search']);
