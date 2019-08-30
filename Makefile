@@ -72,12 +72,12 @@ env:
 
 prod-up:
 	echo "\n Starting containers"
-	docker-compose up -d nginx
+	docker-compose up -d nginx workspace
 #	sleep 10
 #	docker-compose up -d
 
 	echo "\nInstalling Composer Dependencies"
-	docker exec $$(docker-compose ps -q php-fpm) sh -c "composer install --no-dev"
+	docker exec $$(docker-compose ps -q workspace) sh -c "composer install --no-dev"
 	echo "Done"
 
 deploy: env prod-up

@@ -196,7 +196,6 @@ services:
       volumes:
         - /dev/shm:/dev/shm
         - /dev/urandom:/dev/random
-        - $PWD/shared:/shared
       depends_on:
         - hub
       environment:
