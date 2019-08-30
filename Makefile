@@ -72,7 +72,7 @@ env:
 
 prod-up:
 	echo "\n Starting containers"
-	docker-compose up -d
+	docker-compose up -d nginx
 #	sleep 10
 #	docker-compose up -d
 
