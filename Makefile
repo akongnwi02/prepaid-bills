@@ -77,7 +77,7 @@ prod-up:
 #	docker-compose up -d
 
 	echo "\nInstalling Composer Dependencies"
-	docker exec $$(docker-compose ps -q workspace) sh -c "composer install --no-dev"
+	docker exec $$(docker-compose ps -q php-fpm) sh -c "composer install --no-dev"
 	echo "Done"
 
 deploy: env prod-up
