@@ -11,7 +11,6 @@
 |
 */
 
-use App\Http\Controllers\SearchMeterController;
-use Illuminate\Http\Request;
+$router->get('/search', ['uses' => 'MeterController@search']);
 
-$router->post('/search', ['uses' => 'SearchMeterController@search']);
+$router->post('/token', ['uses' => 'MeterController@token']);

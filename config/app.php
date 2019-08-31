@@ -18,6 +18,9 @@ return [
         'username' => env('HEXCELL_USERNAME'),
 
         'password' => env('HEXCELL_PASSWORD'),
-    ]
+
+    ],
+
+    'minimum_purchase_amount' => env('MINIMUM_AMOUNT', 500),
 
 ];

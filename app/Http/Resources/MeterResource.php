@@ -22,13 +22,17 @@ class MeterResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'meterCode'  => $this->getMeterCode(),
-            'tariff'     => $this->getTariff(),
-            'tariffType' => $this->getTariffType(),
-            'contractId' => $this->getContractId(),
-            'address'    => $this->getAddress(),
-            'meterType'  => $this->getMeterType(),
-            'area'       => $this->getArea(),
+            'meterCode'        => $this->getMeterCode(),
+            'tariff'           => $this->getTariff(),
+            'tariffType'       => $this->getTariffType(),
+            'contractId'       => $this->getContractId(),
+            'address'          => $this->getAddress(),
+            'meterType'        => $this->getMeterType(),
+            'area'             => $this->getArea(),
+            'lastVendingDate'  => $this->getLastVendingDate(),
+            'registrationDate' => $this->getRegistrationDate(),
+            'vat'              => $this->getVat(),
+            'internalId'       => $this->getInternalId(),
         ];
     }
 }

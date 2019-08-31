@@ -9,6 +9,9 @@
 namespace App\Services;
 
 use App\Exceptions\ResourceNotFoundException;
+use App\Models\Transaction;
+use Facebook\WebDriver\Exception\NoSuchElementException;
+use Facebook\WebDriver\Exception\TimeOutException;
 
 class HexcellClient extends WebDriverHelper
 {
@@ -26,12 +29,13 @@ class HexcellClient extends WebDriverHelper
 
     /**
      * @param $meterCode
-     * @return Meter
+     * @param bool $return
+     * @return Meter|bool
+     * @throws NoSuchElementException
      * @throws ResourceNotFoundException
-     * @throws \Facebook\WebDriver\Exception\NoSuchElementException
-     * @throws \Facebook\WebDriver\Exception\TimeOutException
+     * @throws TimeOutException
      */
-    public function searchMeter($meterCode) : Meter
+    public function searchMeter($meterCode, $return = true)
     {
         $this->openPage(config('app.hexcell_credentials.url'));
         $this->waitForPage(HtmlSelectors::$LoginPageTitle);
@@ -45,22 +49,45 @@ class HexcellClient extends WebDriverHelper
 
         $this->executeJs(sprintf("$('#txtMeterCode').searchbox('setValue', %s);", $meterCode));
 
-        $this->webDriver->wait(2);
-
         $this->executeJs(HtmlSelectors::$SearchMeterCodeScript);
 
-        $this->webDriver->wait(30);
-        $this->webDriver->takeScreenshot('screenshots.png');
-        $this->webDriver->quit();
+        try {
 
-        if ($this->meter) {
+            $this->waitForResult($meterCode);
+
+        } catch (TimeOutException $e) {
+            // check if we have the no record found pop up
+            if ($this->pageContainsText(HtmlSelectors::$NoRecordFoundText)) {
+                throw new ResourceNotFoundException(Meter::class, $meterCode);
+            }
+        }
+
+        // build the meter object form the input fields
+        $this->meter->setMeterCode($meterCode);
+        $this->meter->setInternalId(md5(uniqid()));
+        $this->meter->setAddress($this->getValue(HtmlSelectors::$AddressField));
+        $this->meter->setContractId($this->getValue(HtmlSelectors::$ContractIdField));
+        $this->meter->setTariff($this->getValue(HtmlSelectors::$TariffField));
+        $this->meter->setTariffType($this->getValue(HtmlSelectors::$TariffTypeField));
+        $this->meter->setArea($this->getValue(HtmlSelectors::$AreaField));
+        $this->meter->setLastVendingDate($this->getValue(HtmlSelectors::$LastVendingDateField));
+        $this->meter->setRegistrationDate($this->getValue(HtmlSelectors::$RegistrationDateField));
+        $this->meter->setVat($this->getValue(HtmlSelectors::$VATField));
+        $this->meter->setMeterType($this->getValue(HtmlSelectors::$MeterTypeField));
+
+        if ($return) {
+            $this->webDriver->quit();
             return $this->meter;
         }
-        throw new ResourceNotFoundException(Meter::class, $meterCode);
-
+        return true;
     }
 
-    public function generateToken()
+    /**
+     * @param $internalId
+     * @param $amount
+     * @return Transaction
+     */
+    public function generateToken($internalId, $amount) : Transaction
     {
 
     }

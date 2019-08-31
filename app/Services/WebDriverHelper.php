@@ -119,17 +119,36 @@ class WebDriverHelper
     }
 
     /**
-     * @param $field
-     * @param $value
+     * @param $meterCode
+     * @throws \Facebook\WebDriver\Exception\NoSuchElementException
+     * @throws \Facebook\WebDriver\Exception\TimeOutException
      */
-    public function setField($field, $value)
+    public function waitForResult($meterCode)
+    {
+        $this->webDriver->wait()
+            ->until(WebDriverExpectedCondition
+                ::elementValueContains(WebDriverBy
+                    ::xpath(HtmlSelectors::$MeterIdField), $meterCode));
+    }
+
+    /**
+     * @param $text
+     * @return bool
+     */
+    public function pageContainsText($text) : bool
+    {
+        return strpos($this->webDriver->getPageSource(), $text) !== false;
+    }
+
+    /**
+     * @param $field
+     * @return string
+     */
+    public function getValue($field) : string
     {
         $fieldElement = $this->webDriver->findElement(WebDriverBy::xpath($field));
-        $this->executeJs("arguments[0].value='value'", [$fieldElement]);
+        return $fieldElement->getAttribute('value');
     }
 
-    public function insertSearchText()
-    {
 
-    }
 }

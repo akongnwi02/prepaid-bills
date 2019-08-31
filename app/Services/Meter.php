@@ -24,6 +24,14 @@ class Meter
 
     private $area;
 
+    private $registrationDate;
+
+    private $lastVendingDate;
+
+    private $vat;
+
+    private $internalId;
+
     /**
      * @return mixed
      */
@@ -134,5 +142,69 @@ class Meter
     public function setArea($area): void
     {
         $this->area = $area;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRegistrationDate()
+    {
+        return $this->registrationDate;
+    }
+
+    /**
+     * @param mixed $registrationDate
+     */
+    public function setRegistrationDate($registrationDate): void
+    {
+        $this->registrationDate = $registrationDate;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastVendingDate()
+    {
+        return $this->lastVendingDate;
+    }
+
+    /**
+     * @param mixed $lastVendingDate
+     */
+    public function setLastVendingDate($lastVendingDate): void
+    {
+        $this->lastVendingDate = $lastVendingDate;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVat()
+    {
+        return $this->vat;
+    }
+
+    /**
+     * @param mixed $vat
+     */
+    public function setVat($vat): void
+    {
+        $this->vat = $vat;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getInternalId()
+    {
+        return $this->internalId;
+    }
+
+    /**
+     * @param mixed $internalId
+     */
+    public function setInternalId($internalId): void
+    {
+        $this->internalId = $internalId;
     }
 }
