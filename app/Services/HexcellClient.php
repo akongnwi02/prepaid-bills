@@ -39,7 +39,6 @@ class HexcellClient extends WebDriverHelper
         $this->openPage($hexcellUrl . HtmlSelectors::$LoginUrl . "?id=$username&pwd=$password");
 
         $this->openPage($hexcellUrl . HtmlSelectors::$MeterSearchUrl . "?id=$meterCode&nflag=1");
-        $this->webDriver->takeScreenshot('abc.jpg');
         $response = json_decode($this->getText(HtmlSelectors::$BodyElement));
 
         if (empty($response)) {
