@@ -12,23 +12,26 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property mixed internal_id
- * @property mixed external_id
- * @property mixed meter_code
+ * @property string internal_id
+ * @property string external_id
+ * @property string meter_code
  * @property double amount
  * @property string callback_url
  * @property string status
+ * @property string meter_id
  */
 class Transaction extends Model
 {
     protected $fillable = [
         'meter_code',
+        'meter_id',
         'internal_id',
         'external_id',
         'energy',
         'amount',
         'token',
         'callback_url',
+        'status',
     ];
 
     protected $casts = [

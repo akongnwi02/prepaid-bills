@@ -104,47 +104,15 @@ services:
       networks:
         - backend
 
-### Beanstalkd ###########################################
-    beanstalkd:
-      build: ./beanstalkd
-      ports:
-        - "${BEANSTALKD_HOST_PORT}:11300"
-      privileged: true
-      depends_on:
-        - php-fpm
-      networks:
-        - backend
-
-### Chrome ##############################################
-    chrome:
-      build: ./chrome
+### Selenium ##############################################
+    selenium:
+      build: ./selenium
+      expose:
+        - "4444"
       volumes:
         - /dev/shm:/dev/shm
-        - /dev/urandom:/dev/random
-      depends_on:
-        - hub
-      environment:
-        JAVA_OPTS: -Xmx1024m
-        SCREEN_WIDTH: 1600
-        SCREEN_HEIGHT: 1200
-        HUB_HOST: hub
-        HUB_PORT: 4444
-        NODE_MAX_INSTANCES: 200
-        NODE_MAX_SESSION: 200
-        DBUS_SESSION_BUS_ADDRESS: /dev/null
-      shm_size: 2g
+      shm_size: 1g
       networks:
         - backend
-
-### Hub #################################################
-    hub:
-      build: ./hub
-      ports:
-        - "${HUB_PORT}:4444"
       environment:
-        GRID_MAX_SESSION: 5
-        GRID_TIMEOUT: 40000
-        GRID_BROWSER_TIMEOUT: 40000
-        GRID_CLEAN_UP_CYCLE: 5000
-      networks:
-        - backend
+        - DBUS_SESSION_BUS_ADDRESS=/dev/null

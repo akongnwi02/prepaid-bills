@@ -31,28 +31,41 @@ class TransactionRepository
      * @param $data
      * @return Transaction
      * @throws ResourceNotFoundException
-     * @throws ConnectionException
      */
-    public function create($meter, $data): Transaction
+    public function create($meter, array $data): Transaction
     {
 
         if ($meter && $meter instanceof Meter) {
 
-            $transaction               = new Transaction();
-            $transaction->internal_id  = $meter->getInternalId();
-            $transaction->meter_code   = $meter->getMeterCode();
-            $transaction->external_id  = $data['externalId'];
-            $transaction->amount       = $data['amount'];
-            $transaction->callback_url = $data['callbackUrl'];
-            $transaction->status       = Constants::CREATED;
+            $transaction = Transaction::create([
+                'internal_id'  => $meter->getInternalId(),
+                'meter_code'   => $meter->getMeterCode(),
+                'meter_id'     => $meter->getContractId(),
+                'amount'       => $data['amount'],
+                'external_id'  => $data['externalId'],
+                'callback_url' => $data['callbackUrl'],
+                'status'       => Constants::CREATED,
+            ]);
 
-            if ($transaction->save()) {
-                return $transaction;
-            }
+            return $transaction;
 
-            throw new ConnectionException('mysql', 'save');
         }
 
         throw new ResourceNotFoundException(Transaction::class, $data['internalId']);
+    }
+
+    /**
+     * @param $txId
+     * @param $meter
+     */
+    public function calculateEnergy($txId, $meter)
+    {
+
+    }
+
+    public function getByTxId()
+    {
+//        $transaction =
+//        return $transaction =
     }
 }

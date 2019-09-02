@@ -2,32 +2,38 @@
 
 namespace App\Jobs;
 
+use App\Models\Transaction;
 use App\Services\HexcellClient;
 
 class TransactionJob extends Job
 {
+
     /**
-     * @var HexcellClient
+     * @var Transaction
      */
-    protected $client;
+    protected $transaction;
 
     /**
      * Create a new job instance.
      *
-     * @param HexcellClient $client
+     * @param Transaction $transaction
      */
-    public function __construct(HexcellClient $client)
+    public function __construct(Transaction $transaction)
     {
-        $this->client = $client;
+        $this->transaction = $transaction;
     }
 
     /**
      * Execute the job.
      *
+     * @param HexcellClient $client
      * @return void
      */
-    public function handle()
+    public function handle(HexcellClient $client)
     {
-        $transaction = $this->client->generateToken();
+        \Log::info('Job started', ['txId' => $this->transaction->internal_id]);
+//        $token = $client->generateToken($this->transaction);
+        dd($this->transaction);
     }
 }
+

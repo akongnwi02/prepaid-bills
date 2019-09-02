@@ -17,6 +17,6 @@ class Constants
     const FAILED     = 'FAILED';
 
     // Queue connections
-
+    const TOKEN_QUEUE = 'token';
 
 }

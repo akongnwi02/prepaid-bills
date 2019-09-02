@@ -8,6 +8,7 @@
 
 namespace App\Http\Resources;
 
+use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class TransactionResource extends JsonResource
@@ -30,8 +31,8 @@ class TransactionResource extends JsonResource
             'energy'      => $this->energy,
             'amount'      => $this->amount,
             'token'       => $this->token,
-            'createdAt'   => $this->created_at,
-            'updatedAt'   => $this->updated_at,
+            'createdAt'   => $this->created_at->toDateTimeString(),
+            'updatedAt'   => $this->updated_at->toDateTimeString(),
         ];
     }
 }

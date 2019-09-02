@@ -9,9 +9,11 @@
 namespace App\Services;
 
 
+use Composer\Plugin\Capability\Capability;
 use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
+use Facebook\WebDriver\Remote\WebDriverCapabilityType;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverExpectedCondition;
 use Facebook\WebDriver\WebDriverKeys;
@@ -40,6 +42,7 @@ class WebDriverHelper
         $caps = DesiredCapabilities::chrome();
         $opts->addArguments([ "--headless","--disable-gpu", "--no-sandbox" ]);
         $caps->setCapability(ChromeOptions::CAPABILITY, $opts);
+        $caps->setCapability(WebDriverCapabilityType::ACCEPT_SSL_CERTS, true);
         $driver = RemoteWebDriver::create(config('app.hub_url'), $caps);
         return $driver;
     }
@@ -150,5 +153,31 @@ class WebDriverHelper
         return $fieldElement->getAttribute('value');
     }
 
+    /**
+     * @param $selector
+     * @param $text
+     * @throws \Facebook\WebDriver\Exception\NoSuchElementException
+     * @throws \Facebook\WebDriver\Exception\TimeOutException
+     */
+    public function waitForText($selector, $text)
+    {
+        $this->webDriver->wait()->until(WebDriverExpectedCondition::elementTextIs(WebDriverBy::xpath($selector), $text));
+    }
+
+    /**
+     * @param $form
+     * @throws \Facebook\WebDriver\Exception\NoSuchElementException
+     * @throws \Facebook\WebDriver\Exception\TimeOutException
+     */
+    public function waitForElement($form)
+    {
+        $this->webDriver->wait()->until(WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::xpath($form)));
+    }
+
+    public function getText($selector)
+    {
+        $element = $this->webDriver->findElement(WebDriverBy::xpath($selector));
+        return $element->getText();
+    }
 
 }

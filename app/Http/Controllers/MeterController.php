@@ -5,11 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Resources\TransactionResource;
 use App\Jobs\TransactionJob;
 use App\Rules\HexcellCode;
+use App\Services\Constants;
 use Illuminate\Http\Request;
 use App\Services\HexcellClient;
 use App\Http\Resources\MeterResource;
 use App\Exceptions\ResourceNotFoundException;
 use App\Repositories\TransactionRepository;
+use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Redis;
 
 class MeterController extends Controller
 {
@@ -35,25 +38,16 @@ class MeterController extends Controller
      * @param \Redis $redis
      * @param TransactionRepository $repository
      */
-    public function __construct(HexcellClient $client, \Redis $redis, TransactionRepository $repository)
+    public function __construct(HexcellClient $client,  TransactionRepository $repository)
     {
         $this->client = $client;
-        $this->redis  = $redis;
         $this->repository = $repository;
-
-        // correctly facing an issue making redis config available to
-        // the redis client due to error in installing illuminate/redis
-        // hence setting the redis host here PS: Bad practice
-        $redis->connect(config('database.redis.cache.host'));
-
     }
 
     /**
      * @param Request $request
      * @return MeterResource
      * @throws ResourceNotFoundException
-     * @throws \Facebook\WebDriver\Exception\NoSuchElementException
-     * @throws \Facebook\WebDriver\Exception\TimeOutException
      * @throws \Illuminate\Validation\ValidationException
      */
     public function search(Request $request)
@@ -73,7 +67,7 @@ class MeterController extends Controller
             'meter_internal_id' => $meter->getInternalId(),
         ]);
 
-        $this->redis->set($meter->getInternalId(), json_encode($meter));
+        Redis::set($meter->getInternalId(), serialize($meter));
 
         return new MeterResource($meter);
 
@@ -101,13 +95,13 @@ class MeterController extends Controller
             ]
         );
 
-        $meter = json_decode($this->redis->get($request['internalId']));
+        $meter = unserialize(Redis::get($request['internalId']));
 
         $transaction = $this->repository->create($meter, $request->input());
 
-        $this->redis->del($request['internalId']);
+        Redis::del($request['internalId']);
 
-        $this->dispatch(TransactionJob::class);
+        Queue::pushOn(Constants::TOKEN_QUEUE, new TransactionJob($transaction));
 
         return new TransactionResource($transaction);
     }

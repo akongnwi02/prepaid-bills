@@ -45,8 +45,15 @@ class HtmlSelectors
 
     // URLs
     static $VendingPageUrl = "/Vending/Electric";
+    static $LoginUrl = "/Login/VerifyLoginUser";
+    static $MeterSearchUrl = '/Common/GetRegMeterByMeterCode';
+    static $TokenGenerateUrl = '/Vending/SaveData';
 
     // text
     static $NoRecordFoundText = "no record";
+    static $True = "true";
 
+    // Labels Element
+    static $BodyElement = "//body";
+    static $FormElement = "//form[@id='meterVending']";
 }
