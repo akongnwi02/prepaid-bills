@@ -37,14 +37,16 @@ class TransactionRepository
 
         if ($meter && $meter instanceof Meter) {
 
+            $energy = $this->calculateEnergy($data['amount'], $meter);
+
             $transaction = Transaction::create([
                 'internal_id'  => $meter->getInternalId(),
                 'meter_code'   => $meter->getMeterCode(),
                 'meter_id'     => $meter->getContractId(),
                 'amount'       => $data['amount'],
                 'external_id'  => $data['externalId'],
-                'callback_url' => $data['callbackUrl'],
                 'status'       => Constants::CREATED,
+                'energy'       => $energy
             ]);
 
             return $transaction;
@@ -55,17 +57,13 @@ class TransactionRepository
     }
 
     /**
-     * @param $txId
+     * @param $amount
      * @param $meter
+     * @return double
      */
-    public function calculateEnergy($txId, $meter)
+    public function calculateEnergy($amount, Meter $meter)
     {
-
+        return round($amount / ($meter->getTariff() * (1 + $meter->getVat()/100))/$meter->getPtct(), 2);
     }
 
-    public function getByTxId()
-    {
-//        $transaction =
-//        return $transaction =
-    }
 }

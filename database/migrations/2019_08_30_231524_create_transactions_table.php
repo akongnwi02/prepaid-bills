@@ -26,7 +26,6 @@ class CreateTransactionsTable extends Migration
                 Constants::SUCCESS,
                 Constants::FAILED
             ]);
-            $table->string('callback_url');
             $table->string('energy')->nullable();
             $table->string('amount')->nullable();
             $table->string('token')->nullable();

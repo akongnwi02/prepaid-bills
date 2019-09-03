@@ -27,7 +27,6 @@ class TransactionResource extends JsonResource
             'internalId'  => $this->internal_id,
             'externalId'  => $this->external_id,
             'status'      => $this->status,
-            'callbackUrl' => $this->callback_url,
             'energy'      => $this->energy,
             'amount'      => $this->amount,
             'token'       => $this->token,

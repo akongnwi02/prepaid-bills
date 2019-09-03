@@ -32,6 +32,11 @@ class Meter
 
     private $internalId;
 
+    private $landlord;
+
+    private $ptct;
+
+
     /**
      * @return mixed
      */
@@ -49,7 +54,7 @@ class Meter
     }
 
     /**
-     * @return mixed
+     * @return float
      */
     public function getTariff()
     {
@@ -57,7 +62,7 @@ class Meter
     }
 
     /**
-     * @param mixed $tariff
+     * @param float $tariff
      */
     public function setTariff($tariff): void
     {
@@ -177,7 +182,7 @@ class Meter
     }
 
     /**
-     * @return mixed
+     * @return float
      */
     public function getVat()
     {
@@ -185,7 +190,7 @@ class Meter
     }
 
     /**
-     * @param mixed $vat
+     * @param float $vat
      */
     public function setVat($vat): void
     {
@@ -206,5 +211,37 @@ class Meter
     public function setInternalId($internalId): void
     {
         $this->internalId = $internalId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLandlord()
+    {
+        return $this->landlord;
+    }
+
+    /**
+     * @param mixed $landlord
+     */
+    public function setLandlord($landlord): void
+    {
+        $this->landlord = $landlord;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPtct()
+    {
+        return $this->ptct;
+    }
+
+    /**
+     * @param mixed $ptct
+     */
+    public function setPtct($ptct): void
+    {
+        $this->ptct = $ptct;
     }
 }

@@ -15,8 +15,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property string internal_id
  * @property string external_id
  * @property string meter_code
+ * @property string token
  * @property double amount
- * @property string callback_url
+ * @property double energy
  * @property string status
  * @property string meter_id
  */
@@ -30,7 +31,6 @@ class Transaction extends Model
         'energy',
         'amount',
         'token',
-        'callback_url',
         'status',
     ];
 

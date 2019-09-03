@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Exceptions\UnAuthorizationException;
 use Exception;
 use Facebook\WebDriver\Exception\TimeOutException;
 use Facebook\WebDriver\Exception\WebDriverCurlException;
@@ -44,53 +45,69 @@ class Handler extends ExceptionHandler
     /**
      * Render an exception into an HTTP response.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Exception  $exception
+     * @param  \Illuminate\Http\Request $request
+     * @param  \Exception $exception
      * @return \Illuminate\Http\Response
      */
     public function render($request, Exception $exception)
     {
         $rendered = parent::render($request, $exception);
 
-        $error['code'] = $rendered->getStatusCode();
+        $error['code']    = $rendered->getStatusCode();
         $error['message'] = 'Server Error';
 
         if ($exception instanceof MethodNotAllowedHttpException) {
             $error['message'] = 'Method Not Allowed';
-            $error['code'] = 405;
+            $error['code']    = 405;
         }
 
         if ($exception instanceof NotFoundHttpException) {
             $error['message'] = 'Route Not found';
-            $error['code'] = 404;
+            $error['code']    = 404;
         }
 
         if ($exception instanceof ValidationException) {
             $error['message'] = 'Invalid data';
-            $error['errors'] = $exception->errors();
-            $error['code'] = 422;
+            $error['errors']  = $exception->errors();
+            $error['code']    = 422;
         }
 
         if ($exception instanceof ResourceNotFoundException) {
             $error['message'] = $exception->getMessage();
-            $error['errors'] = $exception->errors();
-            $error['code'] = 404;
+            $error['errors']  = $exception->errors();
+            $error['code']    = 404;
         }
 
         if ($exception instanceof TimeOutException) {
             $error['message'] = 'Timeout';
-            $error['code'] = 504;
+            $error['code']    = 504;
         }
 
         if ($exception instanceof WebDriverCurlException) {
             $error['message'] = 'Timeout';
-            $error['code'] = 504;
+            $error['code']    = 504;
+        }
+
+        if ($exception instanceof TokenGenerationException) {
+            $error['message'] = $exception->getMessage();
+            $error['code']    = 500;
+        }
+
+        if ($exception instanceof UnAuthorizationException) {
+            $error['message'] = $exception->getMessage();
+            $error['code']    = 401;
+
+        }
+
+        if ($exception instanceof BusinessErrorException) {
+            $error['message'] = $exception->getMessage();
+            $error['code']    = 502;
         }
 
         \Log::error('ExceptionHandler', array_merge($error, [
             'exception' => (string)$exception,
-            'trace' => $exception->getTrace(),
-            'previous' => $exception->getPrevious()
+            'trace'     => $exception->getTrace(),
+            'previous'  => $exception->getPrevious()
         ]));
 
 

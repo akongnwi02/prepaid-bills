@@ -22,7 +22,9 @@ class MeterResource extends JsonResource
     public function toArray($request)
     {
         return [
+            'internalId'       => $this->getInternalId(),
             'meterCode'        => $this->getMeterCode(),
+            'landlord'         => $this->getLandlord(),
             'tariff'           => $this->getTariff(),
             'tariffType'       => $this->getTariffType(),
             'contractId'       => $this->getContractId(),
@@ -32,7 +34,7 @@ class MeterResource extends JsonResource
             'lastVendingDate'  => $this->getLastVendingDate(),
             'registrationDate' => $this->getRegistrationDate(),
             'vat'              => $this->getVat(),
-            'internalId'       => $this->getInternalId(),
+            'pctc'             => $this->getPtct(),
         ];
     }
 }

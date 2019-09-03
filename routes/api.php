@@ -13,4 +13,4 @@
 
 $router->get('/search', ['uses' => 'MeterController@search']);
 
-$router->post('/token', ['uses' => 'MeterController@token']);
+$router->post('/token', ['uses' => 'MeterController@token', 'middleware' => 'auth']);

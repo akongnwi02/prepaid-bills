@@ -28,12 +28,23 @@ class TransactionJob extends Job
      *
      * @param HexcellClient $client
      * @return void
+     * @throws \App\Exceptions\TokenGenerationException
      */
     public function handle(HexcellClient $client)
     {
         \Log::info('Job started', ['txId' => $this->transaction->internal_id]);
-//        $token = $client->generateToken($this->transaction);
-        dd($this->transaction);
+        $token = $client->generateToken([
+            'meterId' => $this->transaction->meter_id,
+            'amount' => $this->transaction->amount,
+            'energy' => $this->transaction->energy
+        ]);
+
+        $this->transaction->token = $token;
+
+        if (! $this->transaction->save()) {
+
+        }
+
     }
 }
 

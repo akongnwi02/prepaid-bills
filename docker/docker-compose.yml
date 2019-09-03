@@ -103,16 +103,3 @@ services:
         - "${REDIS_PORT}:6379"
       networks:
         - backend
-
-### Selenium ##############################################
-    selenium:
-      build: ./selenium
-      expose:
-        - "4444"
-      volumes:
-        - /dev/shm:/dev/shm
-      shm_size: 1g
-      networks:
-        - backend
-      environment:
-        - DBUS_SESSION_BUS_ADDRESS=/dev/null

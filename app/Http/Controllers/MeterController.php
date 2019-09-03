@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\ConnectionException;
 use App\Http\Resources\TransactionResource;
-use App\Jobs\TransactionJob;
 use App\Rules\HexcellCode;
 use App\Services\Constants;
 use Illuminate\Http\Request;
@@ -11,7 +11,6 @@ use App\Services\HexcellClient;
 use App\Http\Resources\MeterResource;
 use App\Exceptions\ResourceNotFoundException;
 use App\Repositories\TransactionRepository;
-use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Redis;
 
 class MeterController extends Controller
@@ -35,12 +34,11 @@ class MeterController extends Controller
      * Create a new controller instance.
      *
      * @param HexcellClient $client
-     * @param \Redis $redis
      * @param TransactionRepository $repository
      */
-    public function __construct(HexcellClient $client,  TransactionRepository $repository)
+    public function __construct(HexcellClient $client, TransactionRepository $repository)
     {
-        $this->client = $client;
+        $this->client     = $client;
         $this->repository = $repository;
     }
 
@@ -62,12 +60,12 @@ class MeterController extends Controller
 
         $meter = $this->client->searchMeter($request['meterCode']);
 
+        Redis::set($meter->getInternalId(), serialize($meter));
+
         \Log::info('MeterController: Search Successful', [
             'meter_code'        => $meter->getMeterCode(),
-            'meter_internal_id' => $meter->getInternalId(),
+            'internal_id' => $meter->getInternalId(),
         ]);
-
-        Redis::set($meter->getInternalId(), serialize($meter));
 
         return new MeterResource($meter);
 
@@ -76,9 +74,10 @@ class MeterController extends Controller
     /**
      * @param Request $request
      * @return TransactionResource
+     * @throws ConnectionException
      * @throws ResourceNotFoundException
      * @throws \Illuminate\Validation\ValidationException
-     * @throws \App\Exceptions\ConnectionException
+     * @throws \App\Exceptions\TokenGenerationException
      */
     public function token(Request $request)
     {
@@ -90,7 +89,6 @@ class MeterController extends Controller
         $this->validate($request, [
                 'internalId'  => ['required', 'string',],
                 'amount'      => ['required', 'regex:/^\d+(\.\d{1,2})?$/',],
-                'callbackUrl' => ['required', 'url'],
                 'externalId'  => ['required', 'string']
             ]
         );
@@ -101,9 +99,30 @@ class MeterController extends Controller
 
         Redis::del($request['internalId']);
 
-        Queue::pushOn(Constants::TOKEN_QUEUE, new TransactionJob($transaction));
+        $token = $this->client->generateToken([
+            'meterId' => $transaction->meter_id,
+            'amount'  => $transaction->amount,
+            'energy'  => $transaction->energy
+        ]);
 
-        return new TransactionResource($transaction);
+        $transaction->token  = $token;
+        $transaction->status = Constants::SUCCESS;
+        if ($transaction->save()) {
+
+            \Log::info('MeterController: Token generated successfully', [
+                'token'       => $transaction->token,
+                'meter code'  => $transaction->meter_code,
+                'internal id' => $transaction->internal_id,
+                'amount'      => $transaction->amount,
+                'energy'      => $transaction->energy
+            ]);
+
+
+            return new TransactionResource($transaction);
+
+        }
+
+        throw new ConnectionException('mysql', 'save');
     }
 
 }

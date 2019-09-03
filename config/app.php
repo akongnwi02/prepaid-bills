@@ -1,9 +1,8 @@
 <?php
 
 return [
-    'api_key' => env('APP_API_KEY', 'TESTKEY'),
 
-    'api_version' => env('APP_API_VERSION', 'v1'),
+    'api_key' => env('API_KEY'),
 
     'debug' => env('APP_DEBUG', true),
 
