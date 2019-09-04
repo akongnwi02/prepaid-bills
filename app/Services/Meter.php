@@ -10,30 +10,69 @@ namespace App\Services;
 
 class Meter
 {
+    /**
+     * code of the meter
+     */
     private $meterCode;
 
+    /**
+     * Price per unit quantity
+     */
     private $tariff;
 
+    /**
+     * Price type
+     */
     private $tariffType;
 
+    /**
+     * Unique identifier of meter
+     */
     private $contractId;
 
+    /**
+     * Location of the meter
+     */
     private $address;
 
+    /**
+     * Meter type e.g Electric
+     */
     private $meterType;
 
+    /**
+     * Area location of meter
+     */
     private $area;
 
+    /**
+     * Registration date of meter
+     */
     private $registrationDate;
 
+    /**
+     * Last vending date in vendor system
+     */
     private $lastVendingDate;
 
+    /**
+     * Tax applied
+     */
     private $vat;
 
+    /**
+     * Internal Id of search operation
+     */
     private $internalId;
 
+    /**
+     * Landlord of meter
+     */
     private $landlord;
 
+    /**
+     * Value used for large meters
+     */
     private $ptct;
 
 

@@ -2,7 +2,6 @@
 
 namespace App\Exceptions;
 
-use App\Exceptions\UnAuthorizationException;
 use Exception;
 use Facebook\WebDriver\Exception\TimeOutException;
 use Facebook\WebDriver\Exception\WebDriverCurlException;

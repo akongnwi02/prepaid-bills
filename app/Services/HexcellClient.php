@@ -90,8 +90,6 @@ class HexcellClient
     public function generateToken(array $params): string
     {
         $hexcellUrl = config('app.hexcell_credentials.url');
-        $username   = config('app.hexcell_credentials.username');
-        $password   = config('app.hexcell_credentials.password');
 
         $meter_id = $params['meterId'];
         $energy   = $params['energy'];
