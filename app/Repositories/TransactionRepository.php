@@ -8,7 +8,6 @@
 
 namespace App\Repositories;
 
-use App\Exceptions\ConnectionException;
 use App\Exceptions\ResourceNotFoundException;
 use App\Models\Transaction;
 use App\Services\Constants;
@@ -39,7 +38,7 @@ class TransactionRepository
 
             $energy = $this->calculateEnergy($data['amount'], $meter);
 
-            $transaction = Transaction::create([
+            return Transaction::create([
                 'internal_id'  => $meter->getInternalId(),
                 'meter_code'   => $meter->getMeterCode(),
                 'meter_id'     => $meter->getContractId(),
@@ -48,8 +47,6 @@ class TransactionRepository
                 'status'       => Constants::CREATED,
                 'energy'       => $energy
             ]);
-
-            return $transaction;
 
         }
 
