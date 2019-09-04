@@ -28,7 +28,6 @@ class HexcellClient
 
     /**
      * @param Meter $meter
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function __construct(Meter $meter)
     {

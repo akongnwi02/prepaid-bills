@@ -47,7 +47,6 @@ class TransactionRepository
                 'status'       => Constants::CREATED,
                 'energy'       => $energy
             ]);
-
         }
 
         throw new ResourceNotFoundException(Transaction::class, $data['internalId']);
