@@ -8,7 +8,7 @@
 
 namespace App\Repositories;
 
-use App\Exceptions\ResourceNotFoundException;
+use App\Exceptions\NotFoundException;
 use App\Models\Transaction;
 use App\Services\Constants;
 use App\Services\Meter;
@@ -29,7 +29,7 @@ class TransactionRepository
      * @param $meter
      * @param $data
      * @return Transaction
-     * @throws ResourceNotFoundException
+     * @throws NotFoundException
      */
     public function create($meter, array $data): Transaction
     {
@@ -49,7 +49,7 @@ class TransactionRepository
             ]);
         }
 
-        throw new ResourceNotFoundException(Transaction::class, $data['internalId']);
+        throw new NotFoundException(Transaction::class, $data['internalId']);
     }
 
     /**

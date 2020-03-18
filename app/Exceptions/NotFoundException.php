@@ -8,10 +8,7 @@
 
 namespace App\Exceptions;
 
-
-use Throwable;
-
-class ResourceNotFoundException extends \Exception
+class NotFoundException extends \Exception
 {
     public $errors;
 

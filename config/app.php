@@ -2,24 +2,16 @@
 
 return [
 
-    'api_key' => env('API_KEY'),
+    'api_key' => env('APP_API_KEY'),
 
     'debug' => env('APP_DEBUG', true),
-
-    'meter_code_regex' => env('HEXCELL_METER_CODE_REGEX'),
-
-    'hub_url' => env('SELENIUM_HUB_URL'),
-
-    'hexcell_credentials' => [
-
-        'url' => env('HEXCELL_URL'),
-
-        'username' => env('HEXCELL_USERNAME'),
-
-        'password' => env('HEXCELL_PASSWORD'),
-
-    ],
-
-    'minimum_purchase_amount' => env('MINIMUM_AMOUNT', 500),
-
+    
+    /*
+     * Service codes
+     */
+    'services' => [
+        'codes' => [
+            'iat' => env('SERVICE_CODE_IAT_PREPAID')
+        ]
+    ]
 ];

@@ -11,6 +11,6 @@
 |
 */
 
-$router->get('/search', ['uses' => 'MeterController@search']);
+$router->get('/quote', ['uses' => 'TransactionController@search', 'middleware' => 'auth']);
 
-$router->post('/token', ['uses' => 'MeterController@token', 'middleware' => 'auth']);
+$router->post('/token', ['uses' => 'TransactionController@execute', 'middleware' => 'auth']);

@@ -16,12 +16,12 @@ class CreateTransactionsTable extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('meter_code');
-            $table->string('meter_id');
+            $table->string('destination');
+            $table->string('service_code');
             $table->string('internal_id');
             $table->string('external_id');
             $table->enum('status', [
-                Constants::CREATED,
+                Constants::QUEUED,
                 Constants::PROCESSING,
                 Constants::SUCCESS,
                 Constants::FAILED

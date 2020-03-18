@@ -2,21 +2,20 @@
 /**
  * Created by PhpStorm.
  * User: devert
- * Date: 8/31/19
- * Time: 2:19 PM
+ * Date: 3/14/20
+ * Time: 7:28 PM
  */
 
-namespace App\Services;
+namespace App\Services\Constants;
 
-class Constants
+
+class Transaction
 {
     // Transaction Status
     const CREATED    = 'CREATED';
     const PROCESSING = 'PROCESSING';
     const SUCCESS    = 'SUCCESS';
     const FAILED     = 'FAILED';
-
-    // Queue connections
-    const TOKEN_QUEUE = 'token';
-
+    
+    
 }

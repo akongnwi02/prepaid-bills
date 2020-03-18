@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use App\Exceptions\UnAuthorizationException;
 use Closure;
-use Illuminate\Support\Facades\Hash;
 
 class Authenticate
 {
@@ -18,8 +17,8 @@ class Authenticate
      */
     public function handle($request, Closure $next)
     {
-        if (! Hash::check($request->header('x-api-key'), config('app.api_key'))) {
-            throw new UnAuthorizationException('Security Violation', 401);
+        if ($request->header('x-api-key') != config('app.api_key')) {
+            throw new UnAuthorizationException('Unauthorized', 401);
         }
         return $next($request);
     }
