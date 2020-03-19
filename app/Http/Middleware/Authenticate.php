@@ -18,7 +18,12 @@ class Authenticate
     public function handle($request, Closure $next)
     {
         if ($request->header('x-api-key') != config('app.api_key')) {
-            throw new UnAuthorizationException('Unauthorized', 401);
+    
+            if (config('access.partner_restriction')) {
+    
+                throw new UnAuthorizationException('Invalid API key', 401);
+            }
+            
         }
         return $next($request);
     }

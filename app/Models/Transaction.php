@@ -16,12 +16,13 @@ class Transaction extends Model
     protected $fillable = [
         'destination',
         'service_code',
+        'callback_url',
         'amount',
         'internal_id',
         'external_id',
         'status',
         'customer_id',
-        ''
+        'items'
     ];
 
     protected $casts = [

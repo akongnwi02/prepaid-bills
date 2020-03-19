@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Support\Facades\Log;
 use Laravel\Lumen\Exceptions\Handler as ExceptionHandler;
 use Exception;
 
@@ -53,7 +54,23 @@ class Handler extends ExceptionHandler
 
         }
         
-        \Log::error('ExceptionHandler', array_merge($error, [
+        if ($exception instanceof GeneralException) {
+            $error['message'] = $exception->getMessage();
+            $error['code']    = $exception->status();
+
+        }
+        
+        if ($exception instanceof ForbiddenException) {
+            $error['message'] = $exception->getMessage();
+            $error['code']    = $exception->status();
+        }
+        
+        if ($exception instanceof DuplicateException) {
+            $error['message'] = $exception->getMessage();
+            $error['code']    = $exception->status();
+        }
+        
+        Log::error('ExceptionHandler', array_merge($error, [
             'exception' => (string)$exception,
             'trace'     => $exception->getTrace(),
             'previous'  => $exception->getPrevious()

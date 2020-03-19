@@ -8,9 +8,11 @@
 
 namespace App\Services\Clients;
 
+use App\Services\Objects\PrepaidMeter;
+
 interface ClientInterface
 {
-    public function search(): Meter;
+    public function search($meterCode): PrepaidMeter;
     
-    public function pay();
+    public function buy($meterCode, $amount) : string;
 }

@@ -9,19 +9,60 @@
 namespace App\Services\Objects;
 
 
+/**
+ * Class PrepaidMeter
+ * @package App\Services\Objects
+ */
 class PrepaidMeter
 {
+    /**
+     * @var
+     */
+    public $int_id;
+    /**
+     * @var
+     */
     public $meter_code;
+    /**
+     * @var
+     */
+    public $service_code;
+    /**
+     * @var
+     */
     public $address;
+    /**
+     * @var
+     */
     public $name;
+    /**
+     * @var
+     */
     public $phone;
+    /**
+     * @var
+     */
     public $email;
+    /**
+     * @var
+     */
     public $city;
+    /**
+     * @var
+     */
     public $state;
+    /**
+     * @var
+     */
     public $price;
+    /**
+     * @var
+     */
     public $amount;
+    /**
+     * @var
+     */
     public $energy;
-    public $token;
     
     /**
      * @return mixed
@@ -33,10 +74,12 @@ class PrepaidMeter
     
     /**
      * @param mixed $meter_code
+     * @return PrepaidMeter
      */
-    public function setMeterCode($meter_code): void
+    public function setMeterCode($meter_code)
     {
         $this->meter_code = $meter_code;
+        return $this;
     }
     
     /**
@@ -49,10 +92,12 @@ class PrepaidMeter
     
     /**
      * @param mixed $address
+     * @return PrepaidMeter
      */
-    public function setAddress($address): void
+    public function setAddress($address)
     {
         $this->address = $address;
+        return $this;
     }
     
     /**
@@ -65,10 +110,12 @@ class PrepaidMeter
     
     /**
      * @param mixed $name
+     * @return PrepaidMeter
      */
-    public function setName($name): void
+    public function setName($name)
     {
         $this->name = $name;
+        return $this;
     }
     
     /**
@@ -81,10 +128,12 @@ class PrepaidMeter
     
     /**
      * @param mixed $price
+     * @return PrepaidMeter
      */
-    public function setPrice($price): void
+    public function setPrice($price)
     {
         $this->price = $price;
+        return $this;
     }
     
     /**
@@ -97,10 +146,12 @@ class PrepaidMeter
     
     /**
      * @param mixed $amount
+     * @return PrepaidMeter
      */
-    public function setAmount($amount): void
+    public function setAmount($amount)
     {
         $this->amount = $amount;
+        return $this;
     }
     
     /**
@@ -113,25 +164,48 @@ class PrepaidMeter
     
     /**
      * @param mixed $energy
+     * @return PrepaidMeter
      */
-    public function setEnergy($energy): void
+    public function setEnergy($energy)
     {
         $this->energy = $energy;
+        return $this;
     }
     
     /**
      * @return mixed
      */
-    public function getToken()
+    public function getIntId()
     {
-        return $this->token;
+        return $this->int_id;
     }
     
     /**
-     * @param mixed $token
+     * @param $int_id
+     * @return PrepaidMeter
      */
-    public function setToken($token): void
+    public function setIntId($int_id)
     {
-        $this->token = $token;
+        $this->int_id = $int_id;
+        return $this;
+        
+    }
+    
+    /**
+     * @param mixed $service_code
+     * @return PrepaidMeter
+     */
+    public function setServiceCode($service_code)
+    {
+        $this->service_code = $service_code;
+        return $this;
+    }
+    
+    /**
+     * @return mixed
+     */
+    public function getServiceCode()
+    {
+        return $this->service_code;
     }
 }

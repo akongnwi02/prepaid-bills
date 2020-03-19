@@ -11,6 +11,8 @@
 |
 */
 
-$router->get('/quote', ['uses' => 'TransactionController@search', 'middleware' => 'auth']);
+$router->get('/search', ['uses' => 'TransactionController@search']);
 
-$router->post('/token', ['uses' => 'TransactionController@execute', 'middleware' => 'auth']);
+$router->post('/execute', ['uses' => 'TransactionController@execute']);
+
+$router->get('/status', ['uses' => 'TransactionController@status']);
