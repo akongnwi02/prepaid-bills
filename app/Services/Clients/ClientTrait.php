@@ -12,28 +12,22 @@ use App\Exceptions\GeneralException;
 
 trait ClientTrait
 {
-    public $iatClient;
-    public $eneoClient;
-    
-    public function __construct(IATClient $iatClient, EneoClient $eneoClient)
-    {
-        $this->iatClient = $iatClient;
-        $this->eneoClient = $eneoClient;
-    }
-    
     /**
      * @param $serviceCode
-     * @return EneoClient|IATClient
+     * @return ClientInterface
      * @throws GeneralException
      */
     public function client($serviceCode)
     {
+        if (strtolower(config('app.env') == 'testing')) {
+            return new TestClient();
+        }
         switch ($serviceCode) {
             case config('app.services.iat.code'):
-                return $this->iatClient;
+                return new IATClient();
                 break;
             case config('app.services.eneo.code'):
-                return $this->eneoClient;
+                return new EneoClient();
                 break;
             default:
                 throw new GeneralException('Unknown Micro Service');

@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\DuplicateException;
 use App\Exceptions\GeneralException;
 use App\Http\Resources\PrepaidMeterResource;
+use App\Http\Resources\TransactionResource;
 use App\Jobs\PurchaseJob;
 use App\Models\Transaction;
 use App\Services\Clients\ClientTrait;
-use App\Services\Objects\PrepaidMeter;
-use Illuminate\Support\Facades\Cache;
+use App\Services\Constants\QueueConstants;
+use App\Services\Constants\TransactionConstants;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
-use Laravel\Lumen\Http\Request;
+use Webpatser\Uuid\Uuid;
 
 class TransactionController extends Controller
 {
@@ -21,59 +23,55 @@ class TransactionController extends Controller
      * @param Request $request
      * @return PrepaidMeterResource
      * @throws GeneralException
-     * @throws \App\Exceptions\BadRequestException
-     * @throws \App\Exceptions\ForbiddenException
-     * @throws \App\Exceptions\NotFoundException
      * @throws \Illuminate\Validation\ValidationException
      */
     public function search(Request $request)
     {
         $this->validate($request, [
-            'destination' => ['required', 'string', 'min:7'],
-            'service__code' => ['required', 'string', 'min:3',],
+            'destination'  => ['required', 'string', 'min:7'],
+            'service_code' => ['required', 'string', 'min:3',],
         ]);
         
         $meter = $this->client($request['destination_code'])->search($request['destination']);
         
         return new PrepaidMeterResource($meter);
-    
+        
     }
     
     /**
      * @param Request $request
      * @param Transaction $transaction
-     * @return Transaction
-     * @throws DuplicateException
+     * @return TransactionResource
+     * @throws GeneralException
      * @throws \Illuminate\Validation\ValidationException
      */
     public function execute(Request $request, Transaction $transaction)
     {
         $this->validate($request, [
-            'destination' => ['required', 'string', 'min:7'],
-            'service__code' => ['required', 'string', 'min:3',],
-            'ext_id' => ['required', 'string', Rule::unique('transactions', 'external_id')],
-            'amount' => ['required', 'regex:/^(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?$/'],
+            'phone'        => ['required', 'numeric', 'min:9'],
+            'destination'  => ['required', 'string', 'min:7'],
+            'service_code' => ['required', 'string', 'min:3',],
+            'external_id'  => ['required', 'string', Rule::unique('transactions', 'external_id')],
+            'amount'       => ['required', 'numeric', 'regex:/^(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?$/'],
             'callback_url' => ['required', 'url'],
         ]);
-    
-        /** @var PrepaidMeter $meter */
-        $meter = Cache::pull($request['search_id']);
-    
-        if (! $meter) {
-            throw new DuplicateException('This transaction is no longer available. May have expired or already processed');
-        }
         
-        $transaction->
-        // TODO
-        // SET THE TRANSACTION OBJECT BEFORE DISPATCHING THE JOB
-        dispatch(new PurchaseJob($transaction));
-    
-        return response()->json($transaction);
+        $transaction->internal_id = Uuid::generate(4)->string;
+        $transaction->external_id = $request['external_id'];
+        $transaction->phone = $request['phone'];
+        $transaction->destination = $request['destination'];
+        $transaction->service_code = $request['service_code'];
+        $transaction->amount = $request['amount'];
+        $transaction->callback_url = $request['callback_url'];
+        $transaction->status = TransactionConstants::CREATED;
+        
+        if ($transaction->save()) {
+            Log::info('New transaction created', ['status' => $transaction->status]);
+            
+            dispatch(new PurchaseJob($transaction))->onQueue(QueueConstants::PURCHASE_QUEUE);
+            
+            return new TransactionResource($transaction);
+        }
+        throw new GeneralException('Error creating transaction');
     }
-    
-    public function status(Transaction $transaction)
-    {
-    
-    }
-
 }

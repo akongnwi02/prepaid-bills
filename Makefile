@@ -31,12 +31,12 @@ test:
 down:
 	docker-compose down --volumes --remove-orphans
 
-reload: pull down up
+reload: down up migrate
 
 up:
 	echo "Starting Containers"
 	docker-compose up -d
-#	sleep 10
+	sleep 5
 #	docker-compose up -d
 
 	echo "\nInstalling Composer Dependencies"

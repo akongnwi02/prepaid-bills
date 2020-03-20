@@ -208,4 +208,22 @@ class PrepaidMeter
     {
         return $this->service_code;
     }
+    
+    /**
+     * @param mixed $phone
+     * @return PrepaidMeter
+     */
+    public function setPhone($phone)
+    {
+        $this->phone = $phone;
+        return $this;
+    }
+    
+    /**
+     * @return mixed
+     */
+    public function getPhone()
+    {
+        return $this->phone;
+    }
 }

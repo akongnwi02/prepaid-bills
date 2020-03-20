@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\Constants;
+use App\Services\Constants\TransactionConstants;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -16,19 +17,29 @@ class CreateTransactionsTable extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->increments('id');
+            $table->boolean('is_callback_sent')->default(false);
+            $table->string('callback_url')->default(false);
+            $table->smallInteger('callback_attempts')->nullable();
+            $table->smallInteger('purchase_attempts')->nullable();
             $table->string('destination');
+            $table->float('amount');
             $table->string('service_code');
             $table->string('internal_id');
-            $table->string('external_id');
+            $table->string('external_id')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('email')->nullable();
+            $table->string('address')->nullable();
+            $table->string('name')->nullable();
+            $table->string('items')->nullable();
+            $table->text('error')->nullable();
+            $table->text('message')->nullable();
             $table->enum('status', [
-                Constants::QUEUED,
-                Constants::PROCESSING,
-                Constants::SUCCESS,
-                Constants::FAILED
+                TransactionConstants::CREATED,
+                TransactionConstants::PROCESSING,
+                TransactionConstants::ERRORED,
+                TransactionConstants::SUCCESS,
+                TransactionConstants::FAILED
             ]);
-            $table->string('energy')->nullable();
-            $table->string('amount')->nullable();
-            $table->string('token')->nullable();
             $table->timestamps();
         });
     }

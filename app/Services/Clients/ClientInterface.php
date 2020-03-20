@@ -12,7 +12,15 @@ use App\Services\Objects\PrepaidMeter;
 
 interface ClientInterface
 {
+    /**
+     * @param $meterCode
+     * @return PrepaidMeter
+     */
     public function search($meterCode): PrepaidMeter;
     
-    public function buy($meterCode, $amount) : string;
+    /**
+     * @param PrepaidMeter $meter
+     * @return string
+     */
+    public function buy(PrepaidMeter $meter) : string;
 }

@@ -2,6 +2,8 @@
 
 return [
 
+    'env' => env('APP_ENV', 'production'),
+    
     'api_key' => env('APP_API_KEY'),
 
     'whitelist' => env('APP_IP_WHITELIST'),
@@ -25,5 +27,8 @@ return [
         'eneo' => [
             'code' => env('SERVICE_ENEO_CODE'),
         ],
-    ]
+        'test' => [
+            'code' => env('TEST_PREPAID_SERVICE'),
+        ]
+    ],
 ];

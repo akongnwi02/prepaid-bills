@@ -19,7 +19,7 @@ class Authenticate
     {
         if ($request->header('x-api-key') != config('app.api_key')) {
     
-            if (config('access.partner_restriction')) {
+            if (config('app.partner_restriction')) {
     
                 throw new UnAuthorizationException('Invalid API key', 401);
             }

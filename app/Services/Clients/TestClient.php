@@ -8,17 +8,22 @@
 
 namespace App\Services\Clients;
 
-
 use App\Services\Objects\PrepaidMeter;
 
 class TestClient implements ClientInterface
 {
     public function search($meterCode): PrepaidMeter
     {
-        // TODO: Implement search() method.
+        $meter = new PrepaidMeter();
+        $meter->setServiceCode(config('app.services.test.code'))
+            ->setMeterCode($meterCode)
+            ->setName('Duke')
+            ->setAddress('123 Deido Douala');
+        return $meter;
     }
     
-    public function buy($meterCode, $amount) : string {
-    
+    public function buy(PrepaidMeter $meter) : string
+    {
+        return '1254145478745254';
     }
 }

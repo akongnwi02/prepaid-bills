@@ -11,30 +11,14 @@ namespace App\Exceptions;
 class NotFoundException extends \Exception
 {
     public $errors;
-
-    public $value;
-
-    public $resource;
-
+    
     public $status = 404;
 
-    public function __construct(string $resource, string $value)
+    public function __construct($message = 'Not found')
     {
-        $this->value = $value;
-        $this->resource = class_basename($resource);
-
-        $message = "Resource [$this->value] of type [$this->resource] is not found";
-
         parent::__construct($message);
     }
-
-    public function errors()
-    {
-        return [$this->value => [
-           'not_found',
-        ]];
-    }
-
+    
     public function status()
     {
         return $this->status;

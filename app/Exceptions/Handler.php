@@ -33,7 +33,7 @@ class Handler extends ExceptionHandler
     {
         $rendered = parent::render($request, $exception);
 
-        $error['code']    = $rendered->getStatusCode();
+        $error['code']    = 500;
         $error['message'] = 'Server Error';
 
         if ($exception instanceof \Illuminate\Validation\ValidationException) {
