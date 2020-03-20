@@ -17,4 +17,5 @@ class TransactionConstants
     const SUCCESS = 'success';
     const FAILED = 'failed';
     const ERRORED = 'errored';
+    const VERIFICATION = 'verification';
 }

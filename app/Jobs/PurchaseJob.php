@@ -82,6 +82,7 @@ class PurchaseJob extends Job
                 'status'         => $this->transaction->status,
                 'transaction id' => $this->transaction->internal_id
             ]);
+            // no status check is available hence delete the job
             $this->delete();
 //                $this->release($this->attempts()*5);
 
@@ -96,5 +97,6 @@ class PurchaseJob extends Job
         
         dispatch(new CallbackJob($this->transaction))->onQueue(QueueConstants::CALLBACK_QUEUE);
     }
+    
 }
 
