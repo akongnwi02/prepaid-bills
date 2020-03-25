@@ -15,4 +15,4 @@ $router->get('/search', ['uses' => 'TransactionController@search']);
 
 $router->post('/execute', ['uses' => 'TransactionController@execute']);
 
-$router->get('/status', ['uses' => 'TransactionController@status']);
+$router->get('/status/{transaction}', ['uses' => 'TransactionController@status']);

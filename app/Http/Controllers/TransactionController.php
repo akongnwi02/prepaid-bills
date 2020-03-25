@@ -74,4 +74,9 @@ class TransactionController extends Controller
         }
         throw new GeneralException('Error creating transaction');
     }
+    
+    public function status(Transaction $transaction)
+    {
+        return new TransactionResource($transaction);
+    }
 }

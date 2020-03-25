@@ -21,7 +21,7 @@ class TransactionResource extends JsonResource
             'external_id'  => $this->external_id,
             'status'       => $this->status,
             'service_code' => $this->service_code,
-            'items'        => $this->items,
+            'asset'        => $this->asset,
             'error'        => $this->error,
             'message'      => $this->message,
             'phone'        => $this->phone,

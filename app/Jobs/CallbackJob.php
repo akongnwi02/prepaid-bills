@@ -55,13 +55,13 @@ class CallbackJob extends Job
             $callbackClient->send($this->transaction);
             $this->transaction->is_callback_sent = true;
             $this->transaction->save();
-            Log::info('Callback completed successfully', [
+            Log::info('Callback request success', [
                 'transaction status' => $this->transaction->status,
                 'transaction id' => $this->transaction->internal_id,
                 'callback_url' => $this->transaction->callback_url,
             ]);
         } catch (GeneralException $e) {
-            Log::info('Callback job failed', [
+            Log::info('Callback request failed', [
                 'error message' => $e->getMessage(),
                 'transaction status' => $this->transaction->status,
                 'transaction id' => $this->transaction->internal_id,

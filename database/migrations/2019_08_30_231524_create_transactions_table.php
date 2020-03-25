@@ -30,7 +30,7 @@ class CreateTransactionsTable extends Migration
             $table->string('email')->nullable();
             $table->string('address')->nullable();
             $table->string('name')->nullable();
-            $table->string('items')->nullable();
+            $table->string('asset')->nullable();
             $table->text('error')->nullable();
             $table->text('message')->nullable();
             $table->enum('status', [

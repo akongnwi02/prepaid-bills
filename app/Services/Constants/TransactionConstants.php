@@ -8,7 +8,6 @@
 
 namespace App\Services\Constants;
 
-
 class TransactionConstants
 {
     // TransactionConstants Status

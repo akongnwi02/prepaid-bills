@@ -46,8 +46,13 @@ class PurchaseJob extends Job
      */
     public function handle(PrepaidMeter $meter)
     {
-        
-        Log::info('Processing new purchase job', [
+        // readme
+        // transaction is status created
+        // when picked by process status is processing
+        // when service provider rejects the transaction, it is set to failed
+        // and put to callback queue
+        Log::info('Processing new
+        $transaction = $categoryClient->create($response); purchase job', [
             'status'         => $this->transaction->status,
             'transaction id' => $this->transaction->internal_id
         ]);
@@ -62,7 +67,7 @@ class PurchaseJob extends Job
         
         try {
             $token = $this->client($meter->getServiceCode())->buy($meter);
-            $this->transaction->items = $token;
+            $this->transaction->asset = $token;
             $this->transaction->status = TransactionConstants::SUCCESS;
             $this->transaction->message = 'Transaction completed successfully';
             
@@ -93,6 +98,7 @@ class PurchaseJob extends Job
         }
         
         $this->transaction->save();
+        
         Log::info('Processing new purchase completed', ['status' => $this->transaction->status, 'transaction id' => $this->transaction->internal_id]);
         
         dispatch(new CallbackJob($this->transaction))->onQueue(QueueConstants::CALLBACK_QUEUE);

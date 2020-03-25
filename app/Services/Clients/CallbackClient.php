@@ -29,7 +29,7 @@ class CallbackClient
                     'status' => $transaction->status,
                     'error' => $transaction->error,
                     'message' => $transaction->message,
-                    'items' => $transaction->items,
+                    'asset' => $transaction->asset,
                 ]
             ]);
         } catch (GuzzleException $exception) {
