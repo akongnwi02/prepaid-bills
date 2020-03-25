@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\GeneralException;
+use App\Exceptions\NotFoundException;
 use App\Http\Resources\PrepaidMeterResource;
 use App\Http\Resources\TransactionResource;
 use App\Jobs\PurchaseJob;
@@ -75,8 +76,17 @@ class TransactionController extends Controller
         throw new GeneralException('Error creating transaction');
     }
     
-    public function status(Transaction $transaction)
+    /**
+     * @param $external_id
+     * @return TransactionResource
+     * @throws NotFoundException
+     */
+    public function status($external_id)
     {
-        return new TransactionResource($transaction);
+        $transaction = Transaction::where('external_id', $external_id)->first();
+        if ($transaction) {
+            return new TransactionResource($transaction);
+        }
+        throw new NotFoundException();
     }
 }
