@@ -28,7 +28,7 @@ return [
             'code' => env('SERVICE_ENEO_CODE'),
         ],
         'test' => [
-            'code' => env('TEST_PREPAID_SERVICE'),
+            'code' => 'TESTCODE',
         ]
     ],
 ];
