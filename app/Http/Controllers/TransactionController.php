@@ -87,6 +87,6 @@ class TransactionController extends Controller
         if ($transaction) {
             return new TransactionResource($transaction);
         }
-        throw new NotFoundException();
+        throw new NotFoundException('transaction');
     }
 }

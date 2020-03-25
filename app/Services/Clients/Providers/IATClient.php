@@ -108,7 +108,7 @@ class IATClient implements ClientInterface
         $status = $response->getStatusCode();
         
         if ($status == 404) {
-            throw new NotFoundException('Meter code not found');
+            throw new NotFoundException('meter_code');
         } else if ($status == 403) {
             throw new ForbiddenException($body->message);
         } else if ($status == 422) {
