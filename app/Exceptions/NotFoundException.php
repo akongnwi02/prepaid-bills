@@ -27,7 +27,7 @@ class NotFoundException extends \Exception
         return $this->status;
     }
     
-    public function error()
+    public function errors()
     {
         return [
             $this->resource => [
