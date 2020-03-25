@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Services\Constants\ErrorCodesConstants;
 use Illuminate\Support\Facades\Log;
 use Laravel\Lumen\Exceptions\Handler as ExceptionHandler;
 use Exception;
@@ -35,39 +36,41 @@ class Handler extends ExceptionHandler
 
         $error['code']    = 500;
         $error['message'] = 'Server Error';
+        $error['error_code'] = ErrorCodesConstants::GENERAL_CODE;
 
         if ($exception instanceof \Illuminate\Validation\ValidationException) {
             $error['message'] = 'Invalid data';
             $error['errors']  = $exception->errors();
             $error['code']    = 422;
+            $error['error_code'] = ErrorCodesConstants::INVALID_INPUTS;
         }
 
         if ($exception instanceof NotFoundException) {
             $error['message'] = $exception->getMessage();
-            $error['errors']  = $exception->errors();
+            $error['error_code']  = $exception->error_code();
             $error['code']    = 404;
         }
         
         if ($exception instanceof UnAuthorizationException) {
             $error['message'] = $exception->getMessage();
             $error['code']    = 401;
+            $error['error_code']    = $exception->error_code();
 
         }
         
         if ($exception instanceof GeneralException) {
             $error['message'] = $exception->getMessage();
             $error['code']    = $exception->status();
-
+            $error['error_code']    = $exception->error_code();
+    
+    
         }
         
         if ($exception instanceof ForbiddenException) {
             $error['message'] = $exception->getMessage();
             $error['code']    = $exception->status();
-        }
-        
-        if ($exception instanceof DuplicateException) {
-            $error['message'] = $exception->getMessage();
-            $error['code']    = $exception->status();
+            $error['error_code']    = $exception->error_code();
+    
         }
         
         Log::error('ExceptionHandler', array_merge($error, [

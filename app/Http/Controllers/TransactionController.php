@@ -9,6 +9,7 @@ use App\Http\Resources\TransactionResource;
 use App\Jobs\PurchaseJob;
 use App\Models\Transaction;
 use App\Services\Clients\ClientTrait;
+use App\Services\Constants\ErrorCodesConstants;
 use App\Services\Constants\QueueConstants;
 use App\Services\Constants\TransactionConstants;
 use Illuminate\Http\Request;
@@ -73,7 +74,7 @@ class TransactionController extends Controller
             
             return new TransactionResource($transaction);
         }
-        throw new GeneralException('Error creating transaction');
+        throw new GeneralException(ErrorCodesConstants::TRANSACTION_CREATION_ERROR, 'error creating transaction in prepaid bill database');
     }
     
     /**
@@ -87,6 +88,6 @@ class TransactionController extends Controller
         if ($transaction) {
             return new TransactionResource($transaction);
         }
-        throw new NotFoundException('transaction');
+        throw new NotFoundException(ErrorCodesConstants::TRANSACTION_NOT_FOUND, 'Transaction not found in prepaid bills database');
     }
 }

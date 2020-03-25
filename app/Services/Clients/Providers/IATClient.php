@@ -12,6 +12,7 @@ use App\Exceptions\BadRequestException;
 use App\Exceptions\ForbiddenException;
 use App\Exceptions\GeneralException;
 use App\Exceptions\NotFoundException;
+use App\Services\Constants\ErrorCodesConstants;
 use App\Services\Objects\PrepaidMeter;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
@@ -35,7 +36,7 @@ class IATClient implements ClientInterface
                 'query' => ['meter_code' => $meterCode],
             ]);
         } catch (GuzzleException $exception) {
-            throw new GeneralException('Error connecting to service provider: ' . $exception->getMessage());
+            throw new GeneralException(ErrorCodesConstants::SERVICE_PROVIDER_CONNECTION_ERROR, 'Error connecting to service provider: ' . $exception->getMessage());
         }
         $content = $response->getBody()->getContents();
         
@@ -77,7 +78,7 @@ class IATClient implements ClientInterface
                 ]
             ]);
         } catch (GuzzleException $exception) {
-            throw new GeneralException('Error connecting to service provider: ' . $exception->getMessage());
+            throw new GeneralException(ErrorCodesConstants::SERVICE_PROVIDER_CONNECTION_ERROR, 'Error connecting to service provider: ' . $exception->getMessage());
         }
         
         $content = $response->getBody()->getContents();
@@ -87,11 +88,12 @@ class IATClient implements ClientInterface
             'response' => $content
         ]);
         
+        $body = json_decode($content);
+    
         if ($response->getStatusCode() == 200) {
-            $body = json_decode($content);
             return $body->token;
         } else {
-            return $this->handleErrorResponse($response);
+            $this->handleErrorResponse($response);
         }
     }
     
@@ -108,13 +110,13 @@ class IATClient implements ClientInterface
         $status = $response->getStatusCode();
         
         if ($status == 404) {
-            throw new NotFoundException('meter_code');
+            throw new NotFoundException(ErrorCodesConstants::METER_CODE_NOT_FOUND, $body->message);
         } else if ($status == 403) {
-            throw new ForbiddenException($body->message);
+            throw new ForbiddenException(ErrorCodesConstants::AUTHORIZATION_ERROR, $body->message);
         } else if ($status == 422) {
-            throw new BadRequestException($body->message);
+            throw new BadRequestException(ErrorCodesConstants::GENERAL_CODE, $body->message);
         } else {
-            throw new GeneralException($body->messge);
+            throw new GeneralException(ErrorCodesConstants::GENERAL_CODE, $body->message);
         }
     }
     

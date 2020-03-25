@@ -2,7 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use App\Exceptions\ForbiddenException;
 use App\Exceptions\UnAuthorizationException;
+use App\Services\Constants\ErrorCodesConstants;
 use Closure;
 
 class Authenticate
@@ -13,7 +15,7 @@ class Authenticate
      * @param  \Illuminate\Http\Request $request
      * @param  \Closure $next
      * @return mixed
-     * @throws UnAuthorizationException
+     * @throws ForbiddenException
      */
     public function handle($request, Closure $next)
     {
@@ -21,7 +23,7 @@ class Authenticate
     
             if (config('app.partner_restriction')) {
     
-                throw new UnAuthorizationException('Invalid API key', 401);
+                throw new ForbiddenException(ErrorCodesConstants::INVALID_API_KEY, 'The api key has not been provided or is invalid');
             }
             
         }

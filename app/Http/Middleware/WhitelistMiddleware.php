@@ -8,7 +8,9 @@
 
 namespace App\Http\Middleware;
 
+use App\Exceptions\ForbiddenException;
 use App\Exceptions\UnAuthorizationException;
+use App\Services\Constants\ErrorCodesConstants;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -19,7 +21,7 @@ class WhitelistMiddleware
      * @param Request $request
      * @param Closure $next
      * @return \Illuminate\Http\RedirectResponse
-     * @throws UnAuthorizationException
+     * @throws ForbiddenException
      */
     public function handle($request, Closure $next)
     {
@@ -33,7 +35,7 @@ class WhitelistMiddleware
             Log::error('IP address is not whitelisted', ['ip address', $request->ip()]);
             
             if (config('app.partner_restriction')) {
-                throw new UnAuthorizationException('IP address not whitelisted', 401);
+                throw new ForbiddenException(ErrorCodesConstants::IP_WHITELIST_ERROR, 'IP address is not whitelisted');
             }
         }
         

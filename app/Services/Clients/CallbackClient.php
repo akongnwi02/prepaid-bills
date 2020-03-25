@@ -10,6 +10,7 @@ namespace App\Services\Clients;
 
 use App\Exceptions\GeneralException;
 use App\Models\Transaction;
+use App\Services\Constants\ErrorCodesConstants;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Log;
@@ -34,7 +35,7 @@ class CallbackClient
             ]);
         } catch (GuzzleException $exception) {
             
-            throw new GeneralException('Error sending callback to CORE: ' . $exception->getMessage());
+            throw new GeneralException(ErrorCodesConstants::CALLBACK_SEND_ERROR,'Error sending callback to CORE: ' . $exception->getMessage());
         }
     
         $content = $response->getBody()->getContents();

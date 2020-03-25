@@ -10,10 +10,14 @@ namespace App\Exceptions;
 
 class BadRequestException extends \Exception
 {
+    public $error_code;
+    
     public $status = 400;
     
-    public function __construct($message = 'Invalid inputs')
+    public function __construct($error_code, $message = 'Invalid input')
     {
+        $this->error_code = $error_code;
+        
         parent::__construct($message);
     }
     
@@ -22,8 +26,9 @@ class BadRequestException extends \Exception
         return $this->status;
     }
     
-    public function errors()
+    public function error_code()
     {
-    
+        return $this->error_code;
     }
+
 }
