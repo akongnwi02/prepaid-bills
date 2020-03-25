@@ -32,7 +32,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        $rendered = parent::render($request, $exception);
+        parent::render($request, $exception);
 
         $error['code']    = 500;
         $error['message'] = 'Server Error';
@@ -41,7 +41,7 @@ class Handler extends ExceptionHandler
         if ($exception instanceof \Illuminate\Validation\ValidationException) {
             $error['message'] = 'Invalid data';
             $error['errors']  = $exception->errors();
-            $error['code']    = 422;
+            $error['code']    = 400;
             $error['error_code'] = ErrorCodesConstants::INVALID_INPUTS;
         }
 
