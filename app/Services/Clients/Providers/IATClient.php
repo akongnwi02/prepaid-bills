@@ -15,6 +15,7 @@ use App\Exceptions\NotFoundException;
 use App\Services\Constants\ErrorCodesConstants;
 use App\Services\Objects\PrepaidMeter;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Log;
 
@@ -35,6 +36,8 @@ class IATClient implements ClientInterface
             $response = $httpClient->request('GET', 'search', [
                 'query' => ['meter_code' => $meterCode],
             ]);
+        } catch (BadResponseException $exception) {
+            $response = $exception->getResponse();
         } catch (GuzzleException $exception) {
             throw new GeneralException(ErrorCodesConstants::SERVICE_PROVIDER_CONNECTION_ERROR, 'Error connecting to service provider: ' . $exception->getMessage());
         }
@@ -77,6 +80,8 @@ class IATClient implements ClientInterface
                     'phone'      => $meter->getPhone(),
                 ]
             ]);
+        } catch (BadResponseException $exception) {
+            $response = $exception->getResponse();
         } catch (GuzzleException $exception) {
             throw new GeneralException(ErrorCodesConstants::SERVICE_PROVIDER_CONNECTION_ERROR, 'Error connecting to service provider: ' . $exception->getMessage());
         }
