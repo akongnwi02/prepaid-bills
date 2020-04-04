@@ -15,7 +15,7 @@ class TestClient implements ClientInterface
     public function search($meterCode): PrepaidMeter
     {
         $meter = new PrepaidMeter();
-        $meter->setServiceCode(config('app.services.test.code'))
+        $meter->setServiceCode('Test Code')
             ->setMeterCode($meterCode)
             ->setName('Duke')
             ->setAddress('123 Deido Douala');
