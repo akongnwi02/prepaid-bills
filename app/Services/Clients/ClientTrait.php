@@ -9,6 +9,9 @@
 namespace App\Services\Clients;
 
 use App\Exceptions\GeneralException;
+use App\Services\Clients\Providers\EneoClient;
+use App\Services\Clients\Providers\TestClient;
+use App\Services\Clients\Providers\IATClient;
 
 trait ClientTrait
 {

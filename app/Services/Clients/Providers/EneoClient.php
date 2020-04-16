@@ -6,9 +6,10 @@
  * Time: 8:27 PM
  */
 
-namespace App\Services\Clients;
+namespace App\Services\Clients\Providers;
 
 
+use App\Services\Clients\ClientInterface;
 use App\Services\Objects\PrepaidMeter;
 
 class EneoClient implements ClientInterface

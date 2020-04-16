@@ -6,8 +6,9 @@
  * Time: 8:53 PM
  */
 
-namespace App\Services\Clients;
+namespace App\Services\Clients\Providers;
 
+use App\Services\Clients\ClientInterface;
 use App\Services\Objects\PrepaidMeter;
 
 class TestClient implements ClientInterface

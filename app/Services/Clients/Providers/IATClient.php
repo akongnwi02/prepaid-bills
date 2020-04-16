@@ -6,12 +6,13 @@
  * Time: 8:10 PM
  */
 
-namespace App\Services\Clients;
+namespace App\Services\Clients\Providers;
 
 use App\Exceptions\BadRequestException;
 use App\Exceptions\ForbiddenException;
 use App\Exceptions\GeneralException;
 use App\Exceptions\NotFoundException;
+use App\Services\Clients\ClientInterface;
 use App\Services\Constants\ErrorCodesConstants;
 use App\Services\Objects\PrepaidMeter;
 use GuzzleHttp\Client;
