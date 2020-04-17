@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Transaction;
-use App\Services\Clients\ClientTrait;
+use App\Services\Clients\ClientProvider;
 use App\Services\Constants\QueueConstants;
 use App\Services\Constants\TransactionConstants;
 use App\Services\Objects\PrepaidMeter;
@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 
 class PurchaseJob extends Job
 {
-    use ClientTrait;
+    use ClientProvider;
     
     /**
      * @var Transaction

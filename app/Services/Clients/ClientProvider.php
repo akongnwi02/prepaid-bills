@@ -13,7 +13,7 @@ use App\Services\Clients\Providers\EneoClient;
 use App\Services\Clients\Providers\TestClient;
 use App\Services\Clients\Providers\IATClient;
 
-trait ClientTrait
+trait ClientProvider
 {
     /**
      * @param $serviceCode

@@ -8,7 +8,7 @@ use App\Http\Resources\PrepaidMeterResource;
 use App\Http\Resources\TransactionResource;
 use App\Jobs\PurchaseJob;
 use App\Models\Transaction;
-use App\Services\Clients\ClientTrait;
+use App\Services\Clients\ClientProvider;
 use App\Services\Constants\ErrorCodesConstants;
 use App\Services\Constants\QueueConstants;
 use App\Services\Constants\TransactionConstants;
@@ -19,7 +19,7 @@ use Webpatser\Uuid\Uuid;
 
 class TransactionController extends Controller
 {
-    use ClientTrait;
+    use ClientProvider;
     
     /**
      * @param Request $request
@@ -50,7 +50,7 @@ class TransactionController extends Controller
     public function execute(Request $request, Transaction $transaction)
     {
         $this->validate($request, [
-            'phone'        => ['required', 'numeric', 'min:9'],
+            'phone'        => ['sometimes', 'numeric', 'min:9'],
             'destination'  => ['required', 'string', 'min:7'],
             'service_code' => ['required', 'string', 'min:3',],
             'external_id'  => ['required', 'string', Rule::unique('transactions', 'external_id')],
