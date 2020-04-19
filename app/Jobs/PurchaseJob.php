@@ -29,7 +29,7 @@ class PurchaseJob extends Job
      * Number of retries
      * @var int
      */
-    public $tries = 5;
+    public $tries = 1;
     
     /**
      * Timeout
