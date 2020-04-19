@@ -8,14 +8,13 @@
 
 namespace App\Jobs;
 
-
 use App\Models\Transaction;
 use App\Services\Clients\ClientProvider;
 use App\Services\Constants\QueueConstants;
 use App\Services\Constants\TransactionConstants;
 use Illuminate\Support\Facades\Log;
 
-class VerificationJob extends Job
+class StatusJob extends Job
 {
     use ClientProvider;
     
@@ -102,15 +101,19 @@ class VerificationJob extends Job
         }
     }
     
-    public function failed($exception = null)
+    public function failed(\Exception $exception = null)
     {
         $this->transaction->status = TransactionConstants::FAILED;
         $this->transaction->message = 'Transaction failed automatically while verifying status';
         $this->transaction->save();
-        Log::alert("{$this->getJobName()}: Transaction failed automatically during status check. Inserted into CALLBACK queue", [
-            'status' => $this->transaction->status,
+        Log::emergency("{$this->getJobName()}: Transaction failed automatically during status check. Inserted into CALLBACK queue", [
+            'transaction.status' => $this->transaction->status,
             'transaction.id' => $this->transaction->id,
-            'destination' => $this->transaction->destination,
+            'transaction.destination' => $this->transaction->destination,
+            'transaction.amount' => $this->transaction->amount,
+            'transaction.message' => $this->transaction->message,
+            'transaction.error' => $this->transaction->error,
+            'transaction.error_code' => $this->transaction->error_code,
             'exception' => $exception,
         ]);
     

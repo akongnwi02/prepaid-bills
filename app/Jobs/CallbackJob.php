@@ -80,6 +80,18 @@ class CallbackJob extends Job
         }
     }
     
+    public function failed(\Exception $exception = null)
+    {
+        Log::emergency("{$this->getJobName()}: Callback request could not be sent to callback url",[
+            'error message' => $exception->getMessage(),
+            'transaction.status' => $this->transaction->status,
+            'transaction.id' => $this->transaction->id,
+            'transaction.destination' => $this->transaction->destination,
+            'transaction.callback_url' => $this->transaction->callback_url,
+            'transaction.amount' => $this->transaction->amount,
+        ]);
+    }
+    
     public function getJobName()
     {
         return class_basename($this);

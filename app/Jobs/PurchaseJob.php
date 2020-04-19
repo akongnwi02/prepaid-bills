@@ -129,7 +129,7 @@ class PurchaseJob extends Job
              * Transaction in unknown state, dispatch to status verification queue
              *
              */
-            dispatch(new VerificationJob($this->transaction))->onQueue(QueueConstants::STATUS_QUEUE);
+            dispatch(new StatusJob($this->transaction))->onQueue(QueueConstants::STATUS_QUEUE);
             
         }
         
@@ -151,14 +151,18 @@ class PurchaseJob extends Job
         $this->transaction->message = 'Transaction failed automatically';
         $this->transaction->error = $exception->getMessage();
         $this->transaction->save();
-        Log::alert("{$this->getJobName()}: Transaction failed automatically. Inserted into VERIFICATION queue", [
-            'status' => $this->transaction->status,
+        Log::emergency("{$this->getJobName()}: Transaction failed automatically during purchase. Inserted into VERIFICATION queue", [
+            'transaction.status' => $this->transaction->status,
             'transaction.id' => $this->transaction->id,
-            'destination' => $this->transaction->destination,
+            'transaction.destination' => $this->transaction->destination,
+            'transaction.amount' => $this->transaction->amount,
+            'transaction.message' => $this->transaction->message,
+            'transaction.error' => $this->transaction->error,
+            'transaction.error_code' => $this->transaction->error_code,
             'exception' => $exception,
         ]);
     
-        dispatch(new VerificationJob($this->transaction))->onQueue(QueueConstants::STATUS_QUEUE);
+        dispatch(new StatusJob($this->transaction))->onQueue(QueueConstants::STATUS_QUEUE);
     
     }
     
