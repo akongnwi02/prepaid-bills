@@ -27,4 +27,17 @@ class TestClient implements ClientInterface
     {
         return '1254145478745254';
     }
+    
+    public function status($transaction): string
+    {
+        return '145845748522155';
+    }
+    
+    /**
+     * @return string
+     */
+    public function getClientName(): string
+    {
+        return class_basename($this);
+    }
 }

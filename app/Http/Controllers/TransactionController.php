@@ -25,6 +25,7 @@ class TransactionController extends Controller
      * @param Request $request
      * @return PrepaidMeterResource
      * @throws GeneralException
+     * @throws \App\Exceptions\BadRequestException
      * @throws \Illuminate\Validation\ValidationException
      */
     public function search(Request $request)
@@ -33,8 +34,13 @@ class TransactionController extends Controller
             'destination'  => ['required', 'string', 'min:7'],
             'service_code' => ['required', 'string', 'min:3',],
         ]);
+    
+        Log::info('New Search request', [
+            'ip' => $request->ip(),
+            'input' => $request->input()
+        ]);
         
-        $meter = $this->client($request['destination_code'])->search($request['destination']);
+        $meter = $this->client($request['service_code'])->search($request['destination']);
         
         return new PrepaidMeterResource($meter);
         
@@ -68,7 +74,11 @@ class TransactionController extends Controller
         $transaction->status = TransactionConstants::CREATED;
         
         if ($transaction->save()) {
-            Log::info('New transaction created', ['status' => $transaction->status]);
+            Log::info('New transaction created. Transaction inserted in PURCHASE QUEUE', [
+                'transaction.id' => $transaction->id,
+                'status' => $transaction->status,
+                'destination' => $transaction->destination,
+            ]);
             
             dispatch(new PurchaseJob($transaction))->onQueue(QueueConstants::PURCHASE_QUEUE);
             

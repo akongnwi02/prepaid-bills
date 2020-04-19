@@ -21,16 +21,19 @@ class CreateTransactionsTable extends Migration
             $table->string('callback_url')->default(false);
             $table->smallInteger('callback_attempts')->nullable();
             $table->smallInteger('purchase_attempts')->nullable();
+            $table->smallInteger('verification_attempts')->nullable();
             $table->string('destination');
             $table->float('amount');
             $table->string('service_code');
             $table->string('internal_id');
             $table->string('external_id')->nullable();
+            $table->string('merchant_id')->nullable();
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
             $table->string('address')->nullable();
             $table->string('name')->nullable();
             $table->string('asset')->nullable();
+            $table->string('error_code')->nullable();
             $table->text('error')->nullable();
             $table->text('message')->nullable();
             $table->enum('status', [
@@ -38,7 +41,8 @@ class CreateTransactionsTable extends Migration
                 TransactionConstants::PROCESSING,
                 TransactionConstants::ERRORED,
                 TransactionConstants::SUCCESS,
-                TransactionConstants::FAILED
+                TransactionConstants::FAILED,
+                TransactionConstants::VERIFICATION,
             ]);
             $table->timestamps();
         });

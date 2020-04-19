@@ -15,8 +15,10 @@ class UnAuthorizationException extends \Exception
     
     public $status = 401;
     
-    public function __construct($message = "User is not authenticated")
+    public function __construct($error_code, $message = "User is not authenticated")
     {
+        $this->error_code = $error_code;
+        
         parent::__construct($message);
     }
     

@@ -23,28 +23,38 @@ class CallbackClient
      */
     public function send(Transaction $transaction)
     {
+        $json = [
+            'status' => $transaction->status,
+            'error_code' => $transaction->error_code,
+            'message' => $transaction->message,
+            'asset' => $transaction->asset,
+        ];
+    
+        Log::debug("{$this->getClientName()}: Sending callback request", [
+            'url' => $transaction->callback_url,
+            'json' => $json
+            
+        ]);
         $httpClient = $this->getHttpClient();
+        
         try {
+            
             $response = $httpClient->request('PATCH', $transaction->callback_url.'/'.$transaction->external_id, [
-                'json' => [
-                    'status' => $transaction->status,
-                    'error' => $transaction->error,
-                    'message' => $transaction->message,
-                    'asset' => $transaction->asset,
-                ]
+                'json' => $json
             ]);
         } catch (GuzzleException $exception) {
             
-            throw new GeneralException(ErrorCodesConstants::CALLBACK_SEND_ERROR,'Error sending callback to CORE: ' . $exception->getMessage());
+            throw new GeneralException(ErrorCodesConstants::CALLBACK_SEND_ERROR,'Error sending callback request to callback url: ' . $exception->getMessage());
         }
-    
+        
         $content = $response->getBody()->getContents();
         
-        Log::debug('response from service provider', [
-            'provider' => config('app.services.iat.code'),
-            'response' => $content
+        Log::debug("{$this->getClientName()}: Response from callback client", [
+            'transaction.status' => $transaction->status,
+            'transaction.id' => $transaction->id,
+            'status code' => $response->getStatusCode(),
+            'content' => $content,
         ]);
-        
     }
     
     /**
@@ -57,5 +67,10 @@ class CallbackClient
             'connect_timeout' => 120,
             'allow_redirects' => true,
         ]);
+    }
+    
+    public function getClientName()
+    {
+        return class_basename($this);
     }
 }

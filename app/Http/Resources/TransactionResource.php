@@ -24,10 +24,10 @@ class TransactionResource extends JsonResource
             'asset'        => $this->asset,
             'error'        => $this->error,
             'message'      => $this->message,
-            'phone'        => $this->phone,
-            'email'        => $this->email,
-            'address'      => $this->address,
-            'name'         => $this->name,
+//            'phone'        => $this->phone,
+//            'email'        => $this->email,
+//            'address'      => $this->address,
+//            'name'         => $this->name,
         ];
     }
 }

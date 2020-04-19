@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Exceptions\GeneralException;
 use App\Models\Transaction;
 use App\Services\Clients\CallbackClient;
 use Illuminate\Support\Facades\Log;
@@ -23,7 +22,13 @@ class CallbackJob extends Job
      * Number of retries
      * @var int
      */
-    public $tries = 10;
+    public $tries = 5;
+    
+    /**
+     * Timeout
+     * @var int
+     */
+    public $timeout = 120;
     
     /**
      * Create a new job instance.
@@ -43,9 +48,10 @@ class CallbackJob extends Job
      */
     public function handle(CallbackClient $callbackClient)
     {
-        Log::info('Processing new callback job', [
-            'transaction status' => $this->transaction->status,
-            'transaction id' => $this->transaction->internal_id,
+        Log::info("{$this->getJobName()}: Processing new callback job", [
+            'status' => $this->transaction->status,
+            'transaction.id' => $this->transaction->id,
+            'destination' => $this->transaction->destination,
             'callback_url' => $this->transaction->callback_url,
         ]);
         
@@ -53,21 +59,29 @@ class CallbackJob extends Job
         $this->transaction->save();
         try {
             $callbackClient->send($this->transaction);
+            
             $this->transaction->is_callback_sent = true;
             $this->transaction->save();
-            Log::info('Callback request success', [
-                'transaction status' => $this->transaction->status,
-                'transaction id' => $this->transaction->internal_id,
+            Log::info("{$this->getJobName()}: Callback request sent successful", [
+                'transaction.status' => $this->transaction->status,
+                'transaction.id' => $this->transaction->id,
+                'destination' => $this->transaction->destination,
                 'callback_url' => $this->transaction->callback_url,
             ]);
-        } catch (GeneralException $e) {
-            Log::info('Callback request failed', [
+        } catch (\Exception $e) {
+            Log::info("{$this->getJobName()}: Callback request failed", [
                 'error message' => $e->getMessage(),
-                'transaction status' => $this->transaction->status,
-                'transaction id' => $this->transaction->internal_id,
+                'transaction.status' => $this->transaction->status,
+                'transaction.id' => $this->transaction->id,
+                'destination' => $this->transaction->destination,
                 'callback_url' => $this->transaction->callback_url,
             ]);
             $this->release($this->attempts()*2);
         }
+    }
+    
+    public function getJobName()
+    {
+        return class_basename($this);
     }
 }

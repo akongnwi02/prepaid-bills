@@ -12,6 +12,7 @@ use App\Exceptions\GeneralException;
 use App\Services\Clients\Providers\EneoClient;
 use App\Services\Clients\Providers\TestClient;
 use App\Services\Clients\Providers\IATClient;
+use App\Services\Constants\ErrorCodesConstants;
 
 trait ClientProvider
 {
@@ -33,7 +34,7 @@ trait ClientProvider
                 return new EneoClient();
                 break;
             default:
-                throw new GeneralException('Unknown Micro Service');
+                throw new GeneralException(ErrorCodesConstants::SERVICE_NOT_FOUND, 'Unknown Micro Service');
         }
     }
 }

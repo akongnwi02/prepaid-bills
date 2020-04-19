@@ -3,7 +3,6 @@
 namespace App\Http\Middleware;
 
 use App\Exceptions\ForbiddenException;
-use App\Exceptions\UnAuthorizationException;
 use App\Services\Constants\ErrorCodesConstants;
 use Closure;
 

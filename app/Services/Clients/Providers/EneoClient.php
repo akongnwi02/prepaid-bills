@@ -9,6 +9,7 @@
 namespace App\Services\Clients\Providers;
 
 
+use App\Models\Transaction;
 use App\Services\Clients\ClientInterface;
 use App\Services\Objects\PrepaidMeter;
 
@@ -30,5 +31,18 @@ class EneoClient implements ClientInterface
     public function buy(PrepaidMeter $meter): string
     {
         throw new \BadMethodCallException('ENEO service not available');
+    }
+    
+    public function status($transaction): string
+    {
+        throw new \BadMethodCallException('ENEO service not available');
+    }
+    
+    /**
+     * @return string
+     */
+    public function getClientName(): string
+    {
+        // TODO: Implement getName() method.
     }
 }

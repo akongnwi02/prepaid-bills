@@ -13,7 +13,7 @@ class ErrorCodesConstants
 {
     const GENERAL_CODE                      = '00000';
     const SERVICE_NOT_FOUND                 = '10000';
-    const PAYMENT_METHOD_FOUND              = '10001';
+    const PAYMENT_METHOD_NOT_FOUND          = '10001';
     const INVALID_INPUTS                    = '10002';
     const AUTHENTICATION_ERROR              = '10003';
     const AUTHORIZATION_ERROR               = '10004';
@@ -34,4 +34,16 @@ class ErrorCodesConstants
     const SERVICE_PROVIDER_CONNECTION_ERROR = '10019';
     const METER_CODE_NOT_FOUND              = '10020';
     const CALLBACK_SEND_ERROR               = '10021';
+    const SERVICE_NOT_IMPLEMENTED           = '10022';
+    const INSUFFICIENT_ACCOUNT_BALANCE      = '10023';
+    const ACCOUNT_LIMITED                   = '10024';
+    const TOKEN_EXPIRED                     = '10025';
+    const PAYMENT_METHOD_NOT_ACTIVE         = '10026';
+    const PAYOUT_REQUEST_ERROR              = '10027';
+    const INSUFFICIENT_COMMISSION_BALANCE   = '10028';
+    const PAYOUT_CANCEL_ERROR               = '10029';
+    const INCORRECT_PIN_CODE                = '10030';
+    const DEACTIVATED_METER                 = '10031';
+    const INVALID_METER_CODE                = '10032';
+    
 }

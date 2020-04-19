@@ -44,16 +44,28 @@ class Handler extends ExceptionHandler
             $error['code']    = 400;
             $error['error_code'] = ErrorCodesConstants::INVALID_INPUTS;
         }
+        
+        if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+            $error['message'] = 'Route Not Found';
+            $error['code']    = 404;
+            $error['error_code'] = ErrorCodesConstants::PATH_NOT_FOUND;
+        }
+        
+        if ($exception instanceof \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException) {
+            $error['message'] = 'Method Not Allowed';
+            $error['code']    = 405;
+            $error['error_code'] = ErrorCodesConstants::METHOD_NOT_ALLOWED;
+        }
 
         if ($exception instanceof NotFoundException) {
             $error['message'] = $exception->getMessage();
             $error['error_code']  = $exception->error_code();
-            $error['code']    = 404;
+            $error['code']    = $exception->status();
         }
         
         if ($exception instanceof UnAuthorizationException) {
             $error['message'] = $exception->getMessage();
-            $error['code']    = 401;
+            $error['code']    = $exception->status();
             $error['error_code']    = $exception->error_code();
 
         }
@@ -70,7 +82,12 @@ class Handler extends ExceptionHandler
             $error['message'] = $exception->getMessage();
             $error['code']    = $exception->status();
             $error['error_code']    = $exception->error_code();
-    
+        }
+        
+        if ($exception instanceof BadRequestException) {
+            $error['message'] = $exception->getMessage();
+            $error['code']    = $exception->status();
+            $error['error_code']    = $exception->error_code();
         }
         
         Log::error('ExceptionHandler', array_merge($error, [
