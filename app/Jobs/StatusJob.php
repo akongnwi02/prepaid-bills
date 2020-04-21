@@ -97,16 +97,17 @@ class StatusJob extends Job
             /*
              * Delay job before attempting the next status verification
              */
-            $this->release($this->attempts() * 2);
+            $this->release($this->attempts() * 5);
         }
     }
     
     public function failed(\Exception $exception = null)
     {
         $this->transaction->status = TransactionConstants::FAILED;
-        $this->transaction->message = 'Transaction failed automatically while verifying status';
+        $this->transaction->message = 'Transaction failed unexpectedly while verifying status';
+        $this->transaction->to_be_verified = true;
         $this->transaction->save();
-        Log::emergency("{$this->getJobName()}: Transaction failed automatically during status check. Inserted into CALLBACK queue", [
+        Log::emergency("{$this->getJobName()}: Transaction failed unexpectedly during status check. Inserted into CALLBACK queue", [
             'transaction.status' => $this->transaction->status,
             'transaction.id' => $this->transaction->id,
             'transaction.destination' => $this->transaction->destination,
@@ -114,9 +115,14 @@ class StatusJob extends Job
             'transaction.message' => $this->transaction->message,
             'transaction.error' => $this->transaction->error,
             'transaction.error_code' => $this->transaction->error_code,
+            'transaction.external_id' => $this->transaction->external_id,
+            'transaction.verification_attempts' => $this->transaction->callback_attempts,
             'exception' => $exception,
         ]);
-    
+        
+        /*
+         * Transaction Status cannot be determined after several retries. Send to callback queue
+         */
         dispatch(new CallbackJob($this->transaction))->onQueue(QueueConstants::CALLBACK_QUEUE);
     }
     

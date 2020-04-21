@@ -111,6 +111,7 @@ class IATClient implements ClientInterface
         Log::debug("{$this->getClientName()}: Response from service provider", [
             'provider' => config('app.services.iat.code'),
             'meter code' => $meter->getMeterCode(),
+            'body' => json_decode($content),
             'response' => $content
         ]);
         
@@ -146,7 +147,7 @@ class IATClient implements ClientInterface
         try {
             $response = $httpClient->request('GET', "/api/status/$transaction->internal_id");
         } catch (\Exception $exception) {
-            Log::debug("{$this->getClientName()}: Error Response from service provider", [
+            Log::error("{$this->getClientName()}: Error Response from service provider", [
                 'provider' => config('app.services.iat.code'),
                 'meter code' => $transaction->destination,
                 'error message' => $exception->getMessage(),
@@ -159,7 +160,8 @@ class IATClient implements ClientInterface
         Log::debug("{$this->getClientName()}: Response from service provider", [
             'provider' => config('app.services.iat.code'),
             'meter code' => $transaction->destination,
-            'response' => $content
+            'body' => json_decode($content),
+            'response' => $content,
         ]);
     
         $body = json_decode($content);

@@ -18,6 +18,7 @@ class CreateTransactionsTable extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->increments('id');
             $table->boolean('is_callback_sent')->default(false);
+            $table->boolean('to_be_verified')->default(false);
             $table->string('callback_url')->default(false);
             $table->smallInteger('callback_attempts')->nullable();
             $table->smallInteger('purchase_attempts')->nullable();

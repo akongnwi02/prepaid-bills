@@ -22,7 +22,7 @@ class CallbackJob extends Job
      * Number of retries
      * @var int
      */
-    public $tries = 5;
+    public $tries = 50;
     
     /**
      * Timeout
@@ -88,7 +88,9 @@ class CallbackJob extends Job
             'transaction.id' => $this->transaction->id,
             'transaction.destination' => $this->transaction->destination,
             'transaction.callback_url' => $this->transaction->callback_url,
+            'transaction.external_id' => $this->transaction->external_id,
             'transaction.amount' => $this->transaction->amount,
+            'transaction.callback_attempts' => $this->transaction->callback_attempts,
         ]);
     }
     
