@@ -55,27 +55,47 @@ class StatusJob extends Job
     public function handle()
     {
         Log::info("{$this->getJobName()}: Processing new status verification job", [
-            'status' => $this->transaction->status,
+            'status'         => $this->transaction->status,
             'transaction.id' => $this->transaction->id,
-            'destination' => $this->transaction->destination,
+            'destination'    => $this->transaction->destination,
         ]);
-    
+        
+        if (in_array($this->transaction->status, [
+            TransactionConstants::FAILED,
+            TransactionConstants::SUCCESS,
+        ])) {
+            Log::warning("{$this->getJobName()}: Transaction is already in final state. No further verification is required", [
+                'transaction.status'                => $this->transaction->status,
+                'transaction.id'                    => $this->transaction->id,
+                'transaction.destination'           => $this->transaction->destination,
+                'transaction.amount'                => $this->transaction->amount,
+                'transaction.message'               => $this->transaction->message,
+                'transaction.error'                 => $this->transaction->error,
+                'transaction.error_code'            => $this->transaction->error_code,
+                'transaction.external_id'           => $this->transaction->external_id,
+                'transaction.verification_attempts' => $this->transaction->verification_attempts,
+            ]);
+            $this->delete();
+            
+            return;
+        }
+        
         $this->transaction->verification_attempts = $this->attempts();
-        $this->transaction->status = TransactionConstants::VERIFICATION;
+        $this->transaction->status                = TransactionConstants::VERIFICATION;
         $this->transaction->save();
-    
+        
         try {
-            $token = $this->client($this->transaction->service_code)->status($this->transaction);
-            $this->transaction->asset = $token;
-            $this->transaction->status = TransactionConstants::SUCCESS;
+            $token                      = $this->client($this->transaction->service_code)->status($this->transaction);
+            $this->transaction->asset   = $token;
+            $this->transaction->status  = TransactionConstants::SUCCESS;
             $this->transaction->message = 'Transaction updated to success by verification worker';
             $this->transaction->save();
             
             Log::info("{$this->getJobName()}: Status updated to success, inserting transaction to callback queue", [
-                'status' => $this->transaction->status,
-                'asset' => $this->transaction->asset,
+                'status'         => $this->transaction->status,
+                'asset'          => $this->transaction->asset,
                 'transaction.id' => $this->transaction->id,
-                'destination' => $this->transaction->destination,
+                'destination'    => $this->transaction->destination,
             ]);
             /*
              * Transaction was found successful after status verification.
@@ -87,12 +107,12 @@ class StatusJob extends Job
             
         } catch (\Exception $e) {
             Log::info("{$this->getJobName()}: Status verification attempt failed", [
-                'error message' => $e->getMessage(),
-                'status' => $this->transaction->status,
+                'error message'  => $e->getMessage(),
+                'status'         => $this->transaction->status,
                 'transaction.id' => $this->transaction->id,
-                'destination' => $this->transaction->destination,
-                'callback_url' => $this->transaction->callback_url,
-                'attempts' => $this->attempts(),
+                'destination'    => $this->transaction->destination,
+                'callback_url'   => $this->transaction->callback_url,
+                'attempts'       => $this->attempts(),
             ]);
             /*
              * Delay job before attempting the next status verification
@@ -103,21 +123,21 @@ class StatusJob extends Job
     
     public function failed(\Exception $exception = null)
     {
-        $this->transaction->status = TransactionConstants::FAILED;
-        $this->transaction->message = 'Transaction failed unexpectedly while verifying status';
+        $this->transaction->status         = TransactionConstants::FAILED;
+        $this->transaction->message        = 'Transaction failed unexpectedly while verifying status';
         $this->transaction->to_be_verified = true;
         $this->transaction->save();
         Log::emergency("{$this->getJobName()}: Transaction failed unexpectedly during status check. Inserted into CALLBACK queue", [
-            'transaction.status' => $this->transaction->status,
-            'transaction.id' => $this->transaction->id,
-            'transaction.destination' => $this->transaction->destination,
-            'transaction.amount' => $this->transaction->amount,
-            'transaction.message' => $this->transaction->message,
-            'transaction.error' => $this->transaction->error,
-            'transaction.error_code' => $this->transaction->error_code,
-            'transaction.external_id' => $this->transaction->external_id,
-            'transaction.verification_attempts' => $this->transaction->callback_attempts,
-            'exception' => $exception,
+            'transaction.status'                => $this->transaction->status,
+            'transaction.id'                    => $this->transaction->id,
+            'transaction.destination'           => $this->transaction->destination,
+            'transaction.amount'                => $this->transaction->amount,
+            'transaction.message'               => $this->transaction->message,
+            'transaction.error'                 => $this->transaction->error,
+            'transaction.error_code'            => $this->transaction->error_code,
+            'transaction.external_id'           => $this->transaction->external_id,
+            'transaction.verification_attempts' => $this->transaction->verification_attempts,
+            'exception'                         => $exception,
         ]);
         
         /*

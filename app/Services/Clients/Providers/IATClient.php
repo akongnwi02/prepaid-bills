@@ -103,7 +103,9 @@ class IATClient implements ClientInterface
             $response = $exception->getResponse();
             
         } catch (GuzzleException $exception) {
-            throw new GeneralException(ErrorCodesConstants::SERVICE_PROVIDER_CONNECTION_ERROR, 'Error connecting to service provider: ' . $exception->getMessage());
+            throw new GeneralException(ErrorCodesConstants::SERVICE_PROVIDER_CONNECTION_ERROR,
+                'Error connecting to service provider: ' . $exception->getMessage()
+            );
         }
         
         $content = $response->getBody()->getContents();

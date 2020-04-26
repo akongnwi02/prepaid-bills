@@ -77,7 +77,7 @@ class PurchaseJob extends Job
             $this->transaction->status  = TransactionConstants::SUCCESS;
             $this->transaction->message = 'Transaction completed successfully';
             $this->transaction->save();
-    
+            
             Log::info("{$this->getJobName()}: Transaction effectuated successfully. Inserted into CALLBACK queue", [
                 'status'         => $this->transaction->status,
                 'transaction.id' => $this->transaction->id,
@@ -95,7 +95,7 @@ class PurchaseJob extends Job
             $this->transaction->message    = 'Transaction failed due to a client error';
             $this->transaction->error_code = $exception->error_code();
             $this->transaction->save();
-    
+            
             Log::info("{$this->getJobName()}: Transaction failed due to client error. Inserted into CALLBACK queue", [
                 'status'         => $this->transaction->status,
                 'transaction.id' => $this->transaction->id,
@@ -115,10 +115,10 @@ class PurchaseJob extends Job
      */
     public function failed(\Exception $exception = null)
     {
-        $this->transaction->status  = TransactionConstants::ERRORED;
-        $this->transaction->message = 'Transaction failed unexpectedly';
-        $this->transaction->error   = $exception->getMessage();
-        $this->transaction->error_code   = ErrorCodesConstants::GENERAL_CODE;
+        $this->transaction->status     = TransactionConstants::ERRORED;
+        $this->transaction->message    = 'Transaction failed unexpectedly';
+        $this->transaction->error      = $exception->getMessage();
+        $this->transaction->error_code = ErrorCodesConstants::GENERAL_CODE;
         $this->transaction->save();
         Log::emergency("{$this->getJobName()}: Transaction failed unexpectedly during purchase. Inserted into VERIFICATION queue", [
             'transaction.status'      => $this->transaction->status,
@@ -131,7 +131,7 @@ class PurchaseJob extends Job
             'transaction.external_id' => $this->transaction->external_id,
             'exception'               => $exception,
         ]);
-    
+        
         /*
          * Transaction failed due to a unexpected error, dispatch to verification queue
          */

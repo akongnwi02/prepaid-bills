@@ -20,9 +20,9 @@ class CreateTransactionsTable extends Migration
             $table->boolean('is_callback_sent')->default(false);
             $table->boolean('to_be_verified')->default(false);
             $table->string('callback_url')->default(false);
-            $table->smallInteger('callback_attempts')->nullable();
-            $table->smallInteger('purchase_attempts')->nullable();
-            $table->smallInteger('verification_attempts')->nullable();
+            $table->smallInteger('callback_attempts')->default(0);
+            $table->smallInteger('purchase_attempts')->default(0);
+            $table->smallInteger('verification_attempts')->default(0);
             $table->string('destination');
             $table->float('amount');
             $table->string('service_code');
