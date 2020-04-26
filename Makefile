@@ -80,5 +80,8 @@ prod-up:
 	docker exec $$(docker-compose ps -q workspace) sh -c "composer install --no-dev"
 	echo "Done"
 
+worker:
+	docker exec -it $$(docker-compose ps -q workspace) sh -c "php artisan queue:work --queue=purchase,status,callback"
+
 deploy: env prod-up
 	cp prod.env .env
