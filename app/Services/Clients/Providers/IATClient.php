@@ -192,7 +192,7 @@ class IATClient implements ClientInterface
             case '1013':
                 throw new BadRequestException(ErrorCodesConstants::DEACTIVATED_METER, 'The meter has been deactivated');
             default:
-                throw new BadRequestException(ErrorCodesConstants::INVALID_INPUTS, 'An invalid input has been provided');
+                throw new BadRequestException(ErrorCodesConstants::INVALID_INPUTS, 'Invalid input(s) have been provided');
         }
     }
     
