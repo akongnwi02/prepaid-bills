@@ -89,7 +89,7 @@ class PurchaseJob extends Job
              */
             dispatch(new CallbackJob($this->transaction))->onQueue(QueueConstants::CALLBACK_QUEUE);
             
-        } catch (BadRequestException $exception) {
+        } catch (\Exception $exception) {
             $this->transaction->status     = TransactionConstants::FAILED;
             $this->transaction->error      = $exception->getMessage();
             $this->transaction->message    = 'Transaction failed due to a client error';

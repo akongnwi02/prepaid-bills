@@ -102,7 +102,7 @@ class IATClient implements ClientInterface
         } catch (ClientException $exception) {
             $response = $exception->getResponse();
             
-        } catch (GuzzleException $exception) {
+        } catch (\Exception $exception) {
             throw new GeneralException(ErrorCodesConstants::SERVICE_PROVIDER_CONNECTION_ERROR,
                 'Error connecting to service provider: ' . $exception->getMessage()
             );
@@ -181,19 +181,18 @@ class IATClient implements ClientInterface
     /**
      * @param $body
      * @throws BadRequestException
-     * @throws GeneralException
      */
     public function handleErrorResponse($body)
     {
-        $status = @$body->code;
-        if ($status == 404) {
-            throw new BadRequestException(ErrorCodesConstants::METER_CODE_NOT_FOUND, $body->message);
-        } else if ($status == 403) {
-            throw new BadRequestException(ErrorCodesConstants::DEACTIVATED_METER, $body->message);
-        } else if ($status == 422) {
-            throw new BadRequestException(ErrorCodesConstants::INVALID_METER_CODE, $body->message);
-        } else {
-            throw new GeneralException(ErrorCodesConstants::GENERAL_CODE, $body->message);
+        switch (@$body->error_code) {
+            case '1008':
+                throw new BadRequestException(ErrorCodesConstants::METER_CODE_NOT_FOUND, 'Meter does not exist');
+            case '1010':
+                throw new BadRequestException(ErrorCodesConstants::MINIMUM_AMOUNT_ERROR, 'The amount provided does not meet the minimum amount required for this service');
+            case '1013':
+                throw new BadRequestException(ErrorCodesConstants::DEACTIVATED_METER, 'The meter has been deactivated');
+            default:
+                throw new BadRequestException(ErrorCodesConstants::INVALID_INPUTS, 'An invalid input has been provided');
         }
     }
     
