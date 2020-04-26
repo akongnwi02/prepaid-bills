@@ -77,6 +77,7 @@ class IATClient implements ClientInterface
      * @return string
      * @throws BadRequestException
      * @throws GeneralException
+     * @throws GuzzleException
      */
     public function buy(PrepaidMeter $meter): string
     {
