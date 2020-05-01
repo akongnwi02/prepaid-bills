@@ -86,7 +86,6 @@ class IATClient implements ClientInterface
             'meter_code' => $meter->getMeterCode(),
             'amount'     => $meter->getAmount(),
             'external_id'=> $meter->getIntId(),
-            // phone not required yet
             'phone'      => $meter->getPhone(),
         ];
     

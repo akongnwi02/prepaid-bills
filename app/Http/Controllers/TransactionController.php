@@ -34,9 +34,9 @@ class TransactionController extends Controller
             'destination'  => ['required', 'string', 'min:7'],
             'service_code' => ['required', 'string', 'min:3',],
         ]);
-    
+        
         Log::info('New Search request', [
-            'ip' => $request->ip(),
+            'ip'    => $request->ip(),
             'input' => $request->input()
         ]);
         
@@ -56,7 +56,7 @@ class TransactionController extends Controller
     public function execute(Request $request, Transaction $transaction)
     {
         $this->validate($request, [
-            'phone'        => ['sometimes', 'numeric', 'min:9'],
+            'phone'        => ['required', 'regex:/^(237|00237|\+237)?[6|2|3]{1}\d{8}$/', 'min:9'],
             'destination'  => ['required', 'string', 'min:7'],
             'service_code' => ['required', 'string', 'min:3',],
             'external_id'  => ['required', 'string', Rule::unique('transactions', 'external_id')],
@@ -64,20 +64,20 @@ class TransactionController extends Controller
             'callback_url' => ['required', 'url'],
         ]);
         
-        $transaction->internal_id = Uuid::generate(4)->string;
-        $transaction->external_id = $request['external_id'];
-        $transaction->phone = $request['phone'];
-        $transaction->destination = $request['destination'];
+        $transaction->internal_id  = Uuid::generate(4)->string;
+        $transaction->external_id  = $request['external_id'];
+        $transaction->phone        = $request['phone'];
+        $transaction->destination  = $request['destination'];
         $transaction->service_code = $request['service_code'];
-        $transaction->amount = $request['amount'];
+        $transaction->amount       = $request['amount'];
         $transaction->callback_url = $request['callback_url'];
-        $transaction->status = TransactionConstants::CREATED;
+        $transaction->status       = TransactionConstants::CREATED;
         
         if ($transaction->save()) {
             Log::info('New transaction created. Transaction inserted in PURCHASE QUEUE', [
                 'transaction.id' => $transaction->id,
-                'status' => $transaction->status,
-                'destination' => $transaction->destination,
+                'status'         => $transaction->status,
+                'destination'    => $transaction->destination,
             ]);
             
             dispatch(new PurchaseJob($transaction))->onQueue(QueueConstants::PURCHASE_QUEUE);
