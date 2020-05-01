@@ -56,7 +56,7 @@ class TransactionController extends Controller
     public function execute(Request $request, Transaction $transaction)
     {
         $this->validate($request, [
-            'phone'        => ['required', 'regex:/^(237|00237|\+237)?[6|2|3]{1}\d{8}$/', 'min:9'],
+            'phone'        => ['sometimes', 'nullable', 'regex:/^(237|00237|\+237)?[6|2|3]{1}\d{8}$/', 'min:9'],
             'destination'  => ['required', 'string', 'min:7'],
             'service_code' => ['required', 'string', 'min:3',],
             'external_id'  => ['required', 'string', Rule::unique('transactions', 'external_id')],
