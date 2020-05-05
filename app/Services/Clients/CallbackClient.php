@@ -24,37 +24,37 @@ class CallbackClient
     public function send(Transaction $transaction)
     {
         $json = [
-            'status' => $transaction->status,
-            'error_code' => $transaction->error_code,
-            'message' => $transaction->message,
+            'status'         => $transaction->status,
+            'error_code'     => $transaction->error_code,
+            'message'        => $transaction->message,
             'to_be_verified' => $transaction->to_be_verified,
-            'asset' => $transaction->asset,
+            'asset'          => $transaction->asset,
         ];
-    
+        
         Log::debug("{$this->getClientName()}: Sending callback request", [
-            'url' => $transaction->callback_url,
+            'url'  => $transaction->callback_url,
             'json' => $json
-            
+        
         ]);
         $httpClient = $this->getHttpClient();
         
         try {
             
-            $response = $httpClient->request('PATCH', $transaction->callback_url.'/'.$transaction->external_id, [
+            $response = $httpClient->request('PATCH', $transaction->callback_url . '/' . $transaction->external_id, [
                 'json' => $json
             ]);
         } catch (GuzzleException $exception) {
             
-            throw new GeneralException(ErrorCodesConstants::CALLBACK_SEND_ERROR,'Error sending callback request to callback url: ' . $exception->getMessage());
+            throw new GeneralException(ErrorCodesConstants::CALLBACK_SEND_ERROR, 'Error sending callback request to callback url: ' . $exception->getMessage());
         }
         
         $content = $response->getBody()->getContents();
         
         Log::debug("{$this->getClientName()}: Response from callback client", [
             'transaction.status' => $transaction->status,
-            'transaction.id' => $transaction->id,
-            'status code' => $response->getStatusCode(),
-            'content' => $content,
+            'transaction.id'     => $transaction->id,
+            'status code'        => $response->getStatusCode(),
+            'content'            => $content,
         ]);
     }
     
@@ -69,7 +69,7 @@ class CallbackClient
             'allow_redirects' => true,
             'headers'         => [
                 'Authorization' => null,
-                'Accept' => 'application/json'
+                'Accept'        => 'application/json'
             ],
         ]);
     }
