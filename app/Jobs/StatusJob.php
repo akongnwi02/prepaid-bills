@@ -58,6 +58,7 @@ class StatusJob extends Job
             'status'         => $this->transaction->status,
             'transaction.id' => $this->transaction->id,
             'destination'    => $this->transaction->destination,
+            'service'        => $this->transaction->service_code,
         ]);
         
         if (in_array($this->transaction->status, [
@@ -74,6 +75,7 @@ class StatusJob extends Job
                 'transaction.error_code'            => $this->transaction->error_code,
                 'transaction.external_id'           => $this->transaction->external_id,
                 'transaction.verification_attempts' => $this->transaction->verification_attempts,
+                'transaction.service'               => $this->transaction->service_code,
             ]);
             $this->delete();
             
@@ -96,6 +98,7 @@ class StatusJob extends Job
                 'asset'          => $this->transaction->asset,
                 'transaction.id' => $this->transaction->id,
                 'destination'    => $this->transaction->destination,
+                'service'        => $this->transaction->service_code,
             ]);
             /*
              * Transaction was found successful after status verification.
@@ -112,6 +115,7 @@ class StatusJob extends Job
                 'transaction.id' => $this->transaction->id,
                 'destination'    => $this->transaction->destination,
                 'callback_url'   => $this->transaction->callback_url,
+                'service'        => $this->transaction->service_code,
                 'attempts'       => $this->attempts(),
             ]);
             /*
@@ -137,6 +141,7 @@ class StatusJob extends Job
             'transaction.error_code'            => $this->transaction->error_code,
             'transaction.external_id'           => $this->transaction->external_id,
             'transaction.verification_attempts' => $this->transaction->verification_attempts,
+            'transaction.service'        => $this->transaction->service_code,
             'exception'                         => $exception,
         ]);
         

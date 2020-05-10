@@ -58,7 +58,8 @@ class PurchaseJob extends Job
         Log::info("{$this->getJobName()}: Processing new purchase job", [
             'status'         => $this->transaction->status,
             'transaction.id' => $this->transaction->id,
-            'destination'    => $this->transaction->destination
+            'destination'    => $this->transaction->destination,
+            'service'        => $this->transaction->service_code,
         ]);
         $this->transaction->status            = TransactionConstants::PROCESSING;
         $this->transaction->purchase_attempts = $this->attempts();
@@ -81,7 +82,8 @@ class PurchaseJob extends Job
             Log::info("{$this->getJobName()}: Transaction effectuated successfully. Inserted into CALLBACK queue", [
                 'status'         => $this->transaction->status,
                 'transaction.id' => $this->transaction->id,
-                'destination'    => $this->transaction->destination
+                'destination'    => $this->transaction->destination,
+                'service'        => $this->transaction->service_code,
             ]);
             
             /*
@@ -100,6 +102,7 @@ class PurchaseJob extends Job
                 'status'         => $this->transaction->status,
                 'transaction.id' => $this->transaction->id,
                 'destination'    => $this->transaction->destination,
+                'service'        => $this->transaction->service_code,
                 'exception'      => $exception,
             ]);
             
@@ -129,6 +132,7 @@ class PurchaseJob extends Job
             'transaction.error'       => $this->transaction->error,
             'transaction.error_code'  => $this->transaction->error_code,
             'transaction.external_id' => $this->transaction->external_id,
+            'transaction.service'     => $this->transaction->service_code,
             'exception'               => $exception,
         ]);
         
