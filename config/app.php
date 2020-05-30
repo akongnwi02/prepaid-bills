@@ -1,7 +1,8 @@
 <?php
 
 return [
-
+    'name' => env('APP_NAME'),
+    
     'env' => env('APP_ENV', 'production'),
     
     'api_key' => env('APP_API_KEY'),
