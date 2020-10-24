@@ -28,7 +28,10 @@ trait ClientProvider
         }
         switch ($serviceCode) {
             case config('app.services.iat.code'):
-                return new IATClient();
+                $config['code'] = config('app.services.iat.code');
+                $config['key']  = config('app.services.iat.key');
+                $config['url']  = config('app.services.iat.url');
+                return new IATClient($config);
                 break;
             case config('app.services.eneo.code'):
                 return new EneoClient();
