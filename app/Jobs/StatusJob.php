@@ -8,6 +8,7 @@
 
 namespace App\Jobs;
 
+use App\Exceptions\BadRequestException;
 use App\Models\Transaction;
 use App\Services\Clients\ClientProvider;
 use App\Services\Constants\QueueConstants;
@@ -85,14 +86,14 @@ class StatusJob extends Job
         $this->transaction->verification_attempts = $this->attempts();
         $this->transaction->status                = TransactionConstants::VERIFICATION;
         $this->transaction->save();
-        
+    
         try {
             $token                      = $this->client($this->transaction->service_code)->status($this->transaction);
             $this->transaction->asset   = $token;
             $this->transaction->status  = TransactionConstants::SUCCESS;
             $this->transaction->message = 'Transaction updated to success by verification worker';
             $this->transaction->save();
-            
+        
             Log::info("{$this->getJobName()}: Status updated to success, inserting transaction to callback queue", [
                 'status'         => $this->transaction->status,
                 'asset'          => $this->transaction->asset,
@@ -105,7 +106,27 @@ class StatusJob extends Job
              * Insert to callback queue
              */
             dispatch(new CallbackJob($this->transaction))->onQueue(QueueConstants::CALLBACK_QUEUE);
-            
+        
+            $this->delete();
+        
+        } catch (BadRequestException $exception) {
+            $this->transaction->status  = TransactionConstants::FAILED;
+            $this->transaction->message = 'Transaction updated to FAILED by verification worker';
+            $this->transaction->save();
+    
+            Log::info("{$this->getJobName()}: Status updated to FAILED, inserting transaction to callback queue", [
+                'status'         => $this->transaction->status,
+                'asset'          => $this->transaction->asset,
+                'transaction.id' => $this->transaction->id,
+                'destination'    => $this->transaction->destination,
+                'service'        => $this->transaction->service_code,
+            ]);
+            /*
+             * Transaction was found FAILED after status verification.
+             * Insert to callback queue
+             */
+            dispatch(new CallbackJob($this->transaction))->onQueue(QueueConstants::CALLBACK_QUEUE);
+    
             $this->delete();
             
         } catch (\Exception $e) {
