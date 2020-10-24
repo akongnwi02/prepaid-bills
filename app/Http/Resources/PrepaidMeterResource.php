@@ -19,6 +19,7 @@ class PrepaidMeterResource extends JsonResource
             'service_code' => $this->service_code,
             'address'      => $this->address,
             'name'         => $this->name,
+            'phone'        => $this->phone
         ];
     }
 }
