@@ -9,22 +9,25 @@
 namespace App\Services\Clients\Providers;
 
 use App\Exceptions\BadRequestException;
-use App\Exceptions\ForbiddenException;
 use App\Exceptions\GeneralException;
-use App\Exceptions\NotFoundException;
 use App\Models\Transaction;
 use App\Services\Clients\ClientInterface;
 use App\Services\Constants\ErrorCodesConstants;
 use App\Services\Objects\PrepaidMeter;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Log;
-use PHPUnit\Runner\Exception;
 
 class IATClient implements ClientInterface
 {
+    public $config;
+    
+    public function __construct($config)
+    {
+        $this->config = $config;
+    }
+    
     /**
      * @param $meterCode
      * @return PrepaidMeter
@@ -55,14 +58,14 @@ class IATClient implements ClientInterface
         $content = $response->getBody()->getContents();
         
         Log::debug("{$this->getClientName()}: Response from service provider", [
-            'provider' => config('app.services.iat.code'),
+            'provider' => $this->config['code'],
             'response' => $content
         ]);
         
         $body = json_decode($content);
         if ($response->getStatusCode() == 200) {
             $meter = new PrepaidMeter();
-            $meter->setServiceCode(config('app.services.iat.code'))
+            $meter->setServiceCode($this->config['code'])
                 ->setMeterCode($meterCode)
                 ->setName($body->landlord)
                 ->setAddress(implode(', ', array_filter([$body->address, $body->location, $body->area])));
@@ -111,7 +114,7 @@ class IATClient implements ClientInterface
         $content = $response->getBody()->getContents();
         
         Log::debug("{$this->getClientName()}: Response from service provider", [
-            'provider' => config('app.services.iat.code'),
+            'provider' => $this->config['code'],
             'meter code' => $meter->getMeterCode(),
             'body' => json_decode($content),
             'response' => $content
@@ -139,7 +142,7 @@ class IATClient implements ClientInterface
     {
         Log::info("{$this->getClientName()}: Sending status check request to service provider", [
             'meter code' => $transaction->destination,
-            'provider' => config('app.services.iat.code'),
+            'provider' => $this->config['code'],
             'transaction.id' => $transaction->id,
             'transaction.status' => $transaction->status,
         ]);
@@ -150,7 +153,7 @@ class IATClient implements ClientInterface
             $response = $httpClient->request('GET', "/api/status/$transaction->internal_id");
         } catch (\Exception $exception) {
             Log::error("{$this->getClientName()}: Error Response from service provider", [
-                'provider' => config('app.services.iat.code'),
+                'provider' => $this->config['code'],
                 'meter code' => $transaction->destination,
                 'error message' => $exception->getMessage(),
             ]);
@@ -160,7 +163,7 @@ class IATClient implements ClientInterface
         $content = $response->getBody()->getContents();
         
         Log::debug("{$this->getClientName()}: Response from service provider", [
-            'provider' => config('app.services.iat.code'),
+            'provider' => $this->config['code'],
             'meter code' => $transaction->destination,
             'body' => json_decode($content),
             'response' => $content,
@@ -202,12 +205,12 @@ class IATClient implements ClientInterface
     public function getHttpClient()
     {
         return new Client([
-            'base_uri'        => config('app.services.iat.url'),
+            'base_uri'        => $this->config['url'],
             'timeout'         => 120,
             'connect_timeout' => 120,
             'allow_redirects' => true,
             'headers'         => [
-                'x-api-key' => config('app.services.iat.key'),
+                'x-api-key' => $this->config['key'],
                 'accept'    => 'application/json'
             ],
         ]);
