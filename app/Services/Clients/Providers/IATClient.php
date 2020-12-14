@@ -184,6 +184,7 @@ class IATClient implements ClientInterface
     /**
      * @param $body
      * @throws BadRequestException
+     * @throws GeneralException
      */
     public function handleErrorResponse($body)
     {
@@ -195,7 +196,7 @@ class IATClient implements ClientInterface
             case '1013':
                 throw new BadRequestException(ErrorCodesConstants::DEACTIVATED_METER, 'The meter has been deactivated');
             default:
-                throw new BadRequestException(ErrorCodesConstants::INVALID_INPUTS, 'Invalid input(s) have been provided');
+                throw new GeneralException(ErrorCodesConstants::GENERAL_CODE, 'Unknown error');
         }
     }
     
