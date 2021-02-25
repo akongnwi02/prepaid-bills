@@ -28,10 +28,25 @@ trait ClientProvider
         }
         switch ($serviceCode) {
             case config('app.services.iat.code'):
-                return new IATClient();
+                $config['code'] = config('app.services.iat.code');
+                $config['key']  = config('app.services.iat.key');
+                $config['url']  = config('app.services.iat.url');
+                return new IATClient($config);
                 break;
+            
             case config('app.services.eneo.code'):
-                return new EneoClient();
+                $config['service_code'] = config('app.services.eneo.code');
+                $config['url']          = config('app.services.eneo.url');
+                $config['username']     = config('app.services.eneo.username');
+                $config['password']     = config('app.services.eneo.password');
+                $config['counter_code'] = config('app.services.eneo.counter_code');
+                $config['client_id'] = config('app.services.eneo.client_id');
+                $config['terminal_id'] = config('app.services.eneo.terminal_id');
+                $config['operator_name'] = config('app.services.eneo.operator_name');
+                $config['operator_password'] = config('app.services.eneo.operator_password');
+                $config['auth_url'] = config('app.services.eneo.auth_url');
+                $config['auth_key'] = config('app.services.eneo.auth_key');
+                return new EneoClient($config);
                 break;
             default:
                 throw new GeneralException(ErrorCodesConstants::SERVICE_NOT_FOUND, 'Unknown Micro Service');
