@@ -228,7 +228,7 @@ class EneoClient implements ClientInterface
         $status = $body->status;
     
         if (strtolower($status) == 'success') {
-            return $body->token;
+            return wordwrap($body->token, 4, ' ', true);
         }
         if (in_array(strtolower($status), ['failed', 'canceled', 'cancelled'])) {
             throw new BadRequestException(ErrorCodesConstants::GENERAL_CODE, 'Transaction failed unexpectedly');
