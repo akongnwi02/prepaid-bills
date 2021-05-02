@@ -21,9 +21,12 @@ return [
     
     'services' => [
         'iat'  => [
-            'code' => env('SERVICE_IAT_CODE'),
-            'url'  => env('SERVICE_IAT_URL'),
-            'key'  => env('SERVICE_IAT_KEY'),
+            'code'             => env('SERVICE_IAT_CODE'),
+            'url'              => env('SERVICE_IAT_URL'),
+            'key'              => env('SERVICE_IAT_KEY'),
+            'secret'           => env('SERVICE_IAT_SECRET'),
+            'currency_code'    => env('SERVICE_IAT_CURRENCY'),
+            'electricity_code' => env('SERVICE_IAT_ELECTRICITY_CODE'),
         ],
         'eneo' => [
             'code'              => env('SERVICE_ENEO_PREPAID_CODE'),
