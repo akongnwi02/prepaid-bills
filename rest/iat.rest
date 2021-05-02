@@ -1,0 +1,56 @@
+### SERVICE PROVIDER
+
+### token
+
+POST http://corang-tests.herokuapp.com/api/partner/token
+Content-Type: application/json
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+
+> {%
+    client.global.set("token", response.body.access_token);
+%}
+
+### METER SEARCH
+
+GET http://corang-tests.herokuapp.com/api/partner/v1/search?service_number=46006023884&service_code=CORIATELEC
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+
+POST http://corang-tests.herokuapp.com/api/partner/v1/buy
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "service_number": "46006023884",
+  "external_id": "123ab3d8ac",
+  "amount": 1000,
+  "currency_code": "XAF",
+  "service_code": "CORIATELEC"
+}
+
+###
+
+GET http://localhost:8081/search?destination=46006023884&service_code=CORIAT
+Content-Type: application/json
+Accept: application/json
+
+###
+
+POST http://localhost:8081/execute
+Content-Type: application/json
+Accept: application/json
+
+{
+  "destination": "46006023884",
+  "service_code": "CORIAT",
+  "amount": 100,
+  "external_id": "125478580",
+  "callback_url": "https://webhook.site/bfc3416a-0f98-4b09-873f-f9043adf8625"
+}
+
+###

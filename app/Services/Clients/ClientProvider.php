@@ -11,7 +11,7 @@ namespace App\Services\Clients;
 use App\Exceptions\GeneralException;
 use App\Services\Clients\Providers\EneoClient;
 use App\Services\Clients\Providers\TestClient;
-use App\Services\Clients\Providers\IATClient;
+use App\Services\Clients\Providers\IATElectricityClient;
 use App\Services\Constants\ErrorCodesConstants;
 
 trait ClientProvider
@@ -29,9 +29,12 @@ trait ClientProvider
         switch ($serviceCode) {
             case config('app.services.iat.code'):
                 $config['code'] = config('app.services.iat.code');
-                $config['key']  = config('app.services.iat.key');
                 $config['url']  = config('app.services.iat.url');
-                return new IATClient($config);
+                $config['key']  = config('app.services.iat.key');
+                $config['secret']  = config('app.services.iat.secret');
+                $config['electricity_code']  = config('app.services.iat.electricity_code');
+                $config['currency_code']  = config('app.services.iat.currency_code');
+                return new IATElectricityClient($config);
                 break;
             
             case config('app.services.eneo.code'):
