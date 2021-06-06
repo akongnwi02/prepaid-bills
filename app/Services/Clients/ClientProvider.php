@@ -27,7 +27,7 @@ trait ClientProvider
             return new TestClient();
         }
         switch ($serviceCode) {
-            case config('app.services.iat.code'):
+            case config('app.services.iat.electricity_code'):
                 $config['code'] = config('app.services.iat.code');
                 $config['url']  = config('app.services.iat.url');
                 $config['key']  = config('app.services.iat.key');
