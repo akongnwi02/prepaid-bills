@@ -2,7 +2,7 @@
 
 ### token
 
-POST http://corang-tests.herokuapp.com/api/partner/token
+POST http://localhost:8081/api/partner/token
 Content-Type: application/json
 Accept: application/json
 Authorization: Basic YWRtaW46c2VjcmV0
