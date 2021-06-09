@@ -38,7 +38,7 @@ class StatusJob extends Job
      * Number of retries
      * @var int
      */
-    public $tries = 5;
+    public $tries = 20;
     
     /**
      * Create a new job instance.
